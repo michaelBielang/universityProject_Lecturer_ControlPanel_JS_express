@@ -11,6 +11,7 @@ const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: './user.db'
 })
+sequelize.sync()
 
 /**
  * Answer Model

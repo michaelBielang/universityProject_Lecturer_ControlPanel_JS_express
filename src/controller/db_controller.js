@@ -1,114 +1,120 @@
 /**
- * Created by Michael Bielang on 31.03.2019.
+ * Created by Michael Bielang on 21.04.2019.
  * www.codemerger.com
  * bielang@codemerger.com
  *
  * Project:
  * java version "10.0.1"
  */
-const userModel = require('../model/user')
-const subjectModel = require('../model/subject')
-const topicModel = require('../model/topic')
-const questionModel = require('../model/question')
-const answerModel = require('../model/answer')
 const Sequelize = require('sequelize')
+const userModel = require('../model/user')
+const topicModel = require('../model/topic')
+// eslint-disable-next-line no-unused-vars
+const initUser = userModel.user.initUser()
+// eslint-disable-next-line no-unused-vars
+const initTopic = topicModel.topic.initTopic()
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './user.db',
-  sync: {force: true}
+  storage: './user.sqlite',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
 })
 sequelize.sync()
 
-/**
- * Makes db_interface available globally
- * @type {{initDb: (function(): Promise<*[]>), addUser: addUser, checkHealth: (function(): Promise<any>)}}
- */
 exports.dbInterface = {
-  checkHealth: checkHealth,
   addUser: addUser,
-  initDb: initDb
+  checkHealth: checkHealth,
+  closeConnection: closeConnection,
+  getUser: getUser,
+  deleteUser: deleteUser,
+  addTopic: addTopic,
+  deleteTopic: deleteTopic,
+  getTopics: getTopics,
+  dropDb: dropDb
+}
+
+function closeConnection () {
+  sequelize.close()
 }
 
 /**
- * Add Models to sequelize
- * @returns {Promise<*[]>}
+ * Drops all tables -relevant for tests only
+ * @returns {Promise<unknown[]>}
  */
-async function initDbModels () {
-  await Promise.all([userModel.user.initUser(), subjectModel.subject.initSubject()])
-  return new Promise(resolve => resolve())
+function dropDb () {
+  return sequelize.drop()
 }
 
-/**
- * Fills associations between tables
- * @returns {Promise<void>}
- */
-async function setupAssociations () {
-  userModel.user.userClass.hasMany(subjectModel.subject.subjectClass)
-  subjectModel.subject.subjectClass.belongsTo(userModel.user.userClass)
+function checkHealth () {
+  return new Promise(((resolve, reject) => {
+    sequelize
+      .authenticate()
+      .then(() => {
+        resolve(true)
+      })
+      .catch(() => {
+        reject(false)
+      })
+  }))
 }
 
-/**
- * Add a new user to the database
- * @param firstName
- * @param lastName
- * @param title
- * @param email
- * @param password_encrypted
- */
-async function addUser (firstName, lastName, title, email, password_encrypted) {
+function addUser (firstName, lastName, email, title, password_encrypted) {
   // Create a new user
-  await userModel.user.userClass.create({
+  return userModel.user.userClass.create({
     firstName: firstName,
     lastName: lastName,
-    email: title,
-    title: email,
+    email: email,
+    title: title,
     password: password_encrypted
-  }).then(jane => {
-    console.log('Jane\'s auto-generated ID:', jane.id)
+  }).then(userObj => {
+    return userObj.id
+  }, () => {
+    return false
   })
 }
 
 function getUser (email) {
-  return userModel.user.userClass.findAll({
+  return new Promise((resolve, reject) => {
+    userModel.user.userClass.findAll({
+      where: {
+        email: email
+      }
+    }).then(result => {
+      resolve(result[0].dataValues)
+    }, () => {
+      reject(false)
+    })
+  })
+}
+
+function deleteUser (email) {
+  userModel.user.userClass.destroy({
     where: {
       email: email
     }
   })
 }
 
-/**
- * Removes a user from db plus all data
- * @param id
- * @returns {*}
- */
-async function removeUser (id) {
-  //todo gather a list with all subjects before and delete them
-  await userModel.user.destroy({
-    where: {
-      id: id
-    }
-  })
-  // todo delete subjects
-}
-
-/**
- * Adds a new topic to the db
- * @param topic
- * @returns {PromiseLike<T | never> | Promise<T | never>}
- */
-function addTopic (topic) {
+function addTopic (title) {
   return topicModel.topic.topicClass.create({
-    topicName: topic
-  }).then(result => {return result.id})
+    topicName: title
+  }).then(result => {
+    return result.id
+  }, () => {
+    return false
+  })
 }
 
-/**
- * Deletes a topic with incl A/Q
- * @param id
- * @returns {Promise<void>}
- */
-async function deleteTopic (id) {
-  await topicModel.topic.destroy({
+function updateTopic (id) {
+
+}
+
+function deleteTopic (id) {
+  topicModel.topic.topicClass.destroy({
     where: {
       id: id
     }
@@ -116,124 +122,11 @@ async function deleteTopic (id) {
 }
 
 function getTopics () {
-  //TODO
-}
-
-/**
- * Add a new subject
- * @param subjectName
- * @returns {Promise<void>}
- */
-async function addSubject (subjectName) {
-  await subjectModel.subject.subjectClass.create({
-    subjectName: subjectName
-  })
-}
-
-/**
- * Deletes a subject plus all topics
- * @param id
- * @returns {Promise<void>}
- */
-async function deleteSubject (id) {
-  await subjectModel.subject.subjectClass.destroy({
-    where: {
-      id: id
-    }
-  })
-}
-
-/**
- *
- * @param id
- * @returns {*}
- */
-function getSubjects (id) {
-  return subjectModel.subject.subjectClass.findAll()
-}
-
-/**
- * Adds a new question to the db
- * @param question
- * @returns {Promise<void>}
- */
-async function addQuestion (question) {
-  await questionModel.question.questionClass.create({
-    question: question
-  })
-}
-
-/**
- * Deletes question plus its answer
- * @param id
- * @returns {Promise<void>}
- */
-async function deleteQuestion (id) {
-  await questionModel.question.questionClass.destroy({
-    where: {
-      id: id
-    }
-  })
-}
-
-function getQuestions () {
-  //TODO
-}
-
-/**
- * Add a new answer to the db
- * @param answer
- * @returns {Promise<void>}
- */
-async function addAnswer (answer) {
-  await answerModel.answer.answerClass.create({
-    answer: answer
-  })
-}
-
-/**
- * Deletes answer
- * @param id
- * @returns {Promise<void>}
- */
-async function deleteAnswer (id) {
-  await answerModel.answer.answerClass.destroy({
-    where: {
-      id: id
-    }
-  })
-}
-
-function getAnswer () {
-  //TODO
-}
-
-/**
- * Checks if the database connection is valid
- * Resolve if true
- * Rejects if not
- * @returns {Promise<any>}
- */
-function checkHealth () {
   return new Promise((resolve, reject) => {
-    sequelize
-      .authenticate()
-      .then(() => resolve())
-      .catch(() => reject())
+    topicModel.topic.topicClass.findAll({}).then(results => {
+      resolve(results)
+    }, () => {
+      reject(false)
+    })
   })
 }
-
-/**
- * Checks if tables are present
- * If not, create tables. Else pass
- * @returns {Promise<void>}
- */
-async function initDb () {
-  await initDbModels()
-  await setupAssociations()
-}
-
-/*
-
-initDb()
-*/

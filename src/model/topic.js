@@ -10,13 +10,41 @@
 const Sequelize = require('sequelize')
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './user.db'
+  storage: '../controller/user.sqlite',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
 })
+sequelize.sync()
 
 /**
  // * Topic Model
  */
 class Topic extends Sequelize.Model {
+}
+
+/**
+ * Initialises topic model
+ * @returns {Promise<*>}
+ */
+function initTopic () {
+  Topic.init(
+    // attributes
+    {
+      topicName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      }
+    },
+    // options
+    {
+      sequelize,
+      modelName: 'topic'
+    }
+  )
 }
 
 /**
@@ -26,28 +54,4 @@ class Topic extends Sequelize.Model {
 exports.topic = {
   initTopic: initTopic,
   topicClass: Topic
-}
-
-/**
- * Initialises topic model
- * @returns {Promise<*>}
- */
-async function initTopic () {
-  return new Promise(resolve => {
-    Topic.init(
-      // attributes
-      {
-        topicName: {
-          type: Sequelize.STRING,
-          allowNull: false
-        }
-      },
-      // options
-      {
-        sequelize,
-        modelName: 'topic'
-      }
-    )
-    resolve()
-  })
 }

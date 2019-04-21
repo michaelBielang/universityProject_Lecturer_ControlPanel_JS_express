@@ -9,7 +9,13 @@
 const Sequelize = require('sequelize')
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './user.db'
+  storage: '../controller/user.sqlite',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
 })
 sequelize.sync()
 
@@ -20,50 +26,48 @@ class User extends Sequelize.Model {
 }
 
 /**
+ * Init user model
+ * @returns {Promise<*>}
+ */
+
+function initUser () {
+  User.init(
+    // attributes
+    {
+      firstName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      lastName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      password: {
+        type: Sequelize.TEXT,
+        allowNull: false
+      }
+    },
+    // options
+    {
+      sequelize,
+      modelName: 'user'
+    }
+  )
+}
+
+/**
  * Makes functions available globally
  * @type {{userClass: User, initUser: (function(): Promise<*>)}}
  */
 exports.user = {
   initUser: initUser,
   userClass: User
-}
-
-/**
- * Init user model
- * @returns {Promise<*>}
- */
-async function initUser () {
-  return new Promise(resolve => {
-    User.init(
-      // attributes
-      {
-        firstName: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        lastName: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        email: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        title: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        password: {
-          type: Sequelize.STRING(20000),
-          allowNull: false
-        }
-      },
-      // options
-      {
-        sequelize,
-        modelName: 'user'
-      }
-    )
-    resolve()
-  })
 }
