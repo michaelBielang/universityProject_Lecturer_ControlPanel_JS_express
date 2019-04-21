@@ -9,10 +9,13 @@
 const Sequelize = require('sequelize')
 const userModel = require('../model/user')
 const topicModel = require('../model/topic')
+const subjectModel = require('../model/subject')
 // eslint-disable-next-line no-unused-vars
 const initUser = userModel.user.initUser()
 // eslint-disable-next-line no-unused-vars
 const initTopic = topicModel.topic.initTopic()
+// eslint-disable-next-line no-unused-vars
+const initSubject = subjectModel.subject.initSubject()
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: './user.sqlite',
@@ -21,7 +24,8 @@ const sequelize = new Sequelize({
     min: 0,
     acquire: 30000,
     idle: 10000
-  }
+  },
+  logging: false
 })
 sequelize.sync()
 
@@ -34,7 +38,14 @@ exports.dbInterface = {
   addTopic: addTopic,
   deleteTopic: deleteTopic,
   getTopics: getTopics,
-  dropDb: dropDb
+  dropDb: dropDb,
+  updateTopic: updateTopic,
+  getTopic: getTopic,
+  addSubject: addSubject,
+  updateSubject: updateSubject,
+  deleteSubject: deleteSubject,
+  getSubjects: getSubjects,
+  getSubject: getSubject
 }
 
 function closeConnection () {
@@ -46,7 +57,8 @@ function closeConnection () {
  * @returns {Promise<unknown[]>}
  */
 function dropDb () {
-  return sequelize.drop()
+  return Promise.all([topicModel.topic.topicClass.destroy({truncate: true}),
+    userModel.user.userClass.destroy({truncate: true})])
 }
 
 function checkHealth () {
@@ -109,8 +121,14 @@ function addTopic (title) {
   })
 }
 
-function updateTopic (id) {
-
+function updateTopic (topicname, new_id) {
+  return new Promise((resolve, reject) => {
+    topicModel.topic.topicClass.update({
+      topicName: topicname
+    }, {where: {id: new_id}})
+      .then(() => resolve())
+      .catch(() => reject(false))
+  })
 }
 
 function deleteTopic (id) {
@@ -118,6 +136,20 @@ function deleteTopic (id) {
     where: {
       id: id
     }
+  })
+}
+
+function getTopic (id) {
+  return new Promise((resolve, reject) => {
+    topicModel.topic.topicClass.findAll({
+      where: {
+        id: id
+      }
+    }).then(topicObj => {
+      resolve(topicObj)
+    }, () => {
+      reject(false)
+    })
   })
 }
 
@@ -130,3 +162,57 @@ function getTopics () {
     })
   })
 }
+
+// todo write tests from here to end
+function addSubject (subjectName) {
+  return subjectModel.subject.subjectClass.create({
+    subjectName: subjectName
+  }).then(result => {
+    return result.id
+  }, () => {
+    return false
+  })
+}
+
+function updateSubject (subjectName, new_id) {
+  return new Promise((resolve, reject) => {
+    subjectModel.subject.subjectClass.update({
+      subjectName: subjectName
+    }, {where: {id: new_id}})
+      .then(() => resolve())
+      .catch(() => reject(false))
+  })
+}
+
+function deleteSubject (id) {
+  subjectModel.subject.subjectClass.destroy({
+    where: {
+      id: id
+    }
+  })
+}
+
+function getSubject (id) {
+  return new Promise((resolve, reject) => {
+    subjectModel.subject.subjectClass.findAll({
+      where: {
+        id: id
+      }
+    }).then(topicObj => {
+      resolve(topicObj)
+    }, () => {
+      reject(false)
+    })
+  })
+}
+
+function getSubjects () {
+  return new Promise((resolve, reject) => {
+    subjectModel.subject.subjectClass.findAll({}).then(results => {
+      resolve(results)
+    }, () => {
+      reject(false)
+    })
+  })
+}
+

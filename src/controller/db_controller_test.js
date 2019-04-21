@@ -101,6 +101,30 @@ describe('test get topics from db', function () {
   )
 })
 
+describe('test get topic from db', function () {
+  const db = require('./db_controller')
+  var id
+  before(async function () {
+    await db.dbInterface.addTopic('topicTest').then(objId => {
+      id = objId
+      return Promise.resolve()
+    })
+  })
+  it('should work', async function () {
+    await db.dbInterface.getTopics().then(() => {
+      return Promise.resolve()
+    })
+    await db.dbInterface.getTopic(id).then((result) => {
+      expect(JSON.stringify(result).includes('topicTest')).equal(true)
+      return Promise.resolve()
+    })
+  })
+  after(async () => {
+      await db.dbInterface.dropDb()
+    }
+  )
+})
+
 describe('test delete topic from db', function () {
   const db = require('./db_controller')
   var topicID
@@ -115,6 +139,29 @@ describe('test delete topic from db', function () {
     await new Promise(resolve => setTimeout(resolve, 250))
     await db.dbInterface.getTopics().then((result) => {
       expect(JSON.stringify(result).includes('deleteTopicTest2')).equal(false)
+      return Promise.resolve()
+    })
+  })
+  after(async () => {
+      await db.dbInterface.dropDb()
+    }
+  )
+})
+
+describe('test update topic from db', function () {
+  const db = require('./db_controller')
+  var topicID
+  before(async function () {
+    await db.dbInterface.addTopic('updateTopic').then((result) => {
+      topicID = result
+      return Promise.resolve()
+    })
+  })
+  it('should work', async function () {
+    db.dbInterface.updateTopic('success', topicID)
+    await new Promise(resolve => setTimeout(resolve, 250))
+    await db.dbInterface.getTopic(topicID).then((result) => {
+      expect(JSON.stringify(result).includes('success')).equal(true)
       return Promise.resolve()
     })
   })

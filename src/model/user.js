@@ -15,7 +15,8 @@ const sequelize = new Sequelize({
     min: 0,
     acquire: 30000,
     idle: 10000
-  }
+  },
+  logging: false
 })
 sequelize.sync()
 
@@ -31,6 +32,7 @@ class User extends Sequelize.Model {
  */
 
 function initUser () {
+  //TODO optional realize with sequelize.transaction
   User.init(
     // attributes
     {
