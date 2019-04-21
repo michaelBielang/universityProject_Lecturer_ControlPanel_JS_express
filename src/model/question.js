@@ -9,7 +9,14 @@
 const Sequelize = require('sequelize')
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './user.db'
+  storage: '../controller/user.sqlite',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  },
+  logging: false
 })
 sequelize.sync()
 
@@ -19,6 +26,23 @@ sequelize.sync()
 class Question extends Sequelize.Model {
 }
 
+function initQuestion () {
+  Question.init(
+    // attributes
+    {
+      question: {
+        type: Sequelize.TEXT,
+        allowNull: false
+      }
+    },
+    // options
+    {
+      sequelize,
+      modelName: 'question'
+    }
+  )
+}
+
 /**
  * Makes functions available globally
  * @type {{questionClass: Question, initQuestion: (function(): Promise<*>)}}
@@ -26,24 +50,4 @@ class Question extends Sequelize.Model {
 exports.question = {
   initQuestion: initQuestion,
   questionClass: Question
-}
-
-async function initQuestion () {
-  return new Promise(resolve => {
-    Question.init(
-      // attributes
-      {
-        question: {
-          type: Sequelize.STRING(1000),
-          allowNull: false
-        }
-      },
-      // options
-      {
-        sequelize,
-        modelName: 'question'
-      }
-    )
-    resolve()
-  })
 }
