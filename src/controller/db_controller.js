@@ -6,16 +6,24 @@
  * Project:
  * java version "10.0.1"
  */
+
+// important TODO -> user.sqlite is created where db_controller file is located. Make one global path possible
 const Sequelize = require('sequelize')
 const userModel = require('../model/user')
 const topicModel = require('../model/topic')
 const subjectModel = require('../model/subject')
+const questionModel = require('../model/question')
+const answerModel = require('../model/answer')
 // eslint-disable-next-line no-unused-vars
 const initUser = userModel.user.initUser()
 // eslint-disable-next-line no-unused-vars
 const initTopic = topicModel.topic.initTopic()
 // eslint-disable-next-line no-unused-vars
 const initSubject = subjectModel.subject.initSubject()
+// eslint-disable-next-line no-unused-vars
+const initQuestion = questionModel.question.initQuestion()
+// eslint-disable-next-line no-unused-vars
+const initAnswer = answerModel.answer.initAnswer()
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: './user.sqlite',
@@ -45,7 +53,17 @@ exports.dbInterface = {
   updateSubject: updateSubject,
   deleteSubject: deleteSubject,
   getSubjects: getSubjects,
-  getSubject: getSubject
+  getSubject: getSubject,
+  addQuestion: addQuestion,
+  updateQuestion: updateQuestion,
+  deleteQuestion: deleteQuestion,
+  getQuestion: getQuestion,
+  getQuestions: getQuestions,
+  addAnswer: addAnswer,
+  updateAnswer: updateAnswer,
+  deleteAnswer: deleteAnswer,
+  getAnswer: getAnswer,
+  getAnswers: getAnswers
 }
 
 function closeConnection () {
@@ -163,7 +181,6 @@ function getTopics () {
   })
 }
 
-// todo write tests from here to end
 function addSubject (subjectName) {
   return subjectModel.subject.subjectClass.create({
     subjectName: subjectName
@@ -216,3 +233,108 @@ function getSubjects () {
   })
 }
 
+function addQuestion (content) {
+  return questionModel.question.questionClass.create({
+    question: content
+  }).then(result => {
+    return result.id
+  }, () => {
+    return false
+  })
+}
+
+function updateQuestion (newQuestion, questionId) {
+  return new Promise((resolve, reject) => {
+    questionModel.question.questionClass.update({
+      question: newQuestion
+    }, {where: {id: questionId}})
+      .then(() => resolve())
+      .catch(() => reject(false))
+  })
+}
+
+function deleteQuestion (id) {
+  questionModel.question.questionClass.destroy({
+    where: {
+      id: id
+    }
+  })
+}
+
+function getQuestion (id) {
+  return new Promise((resolve, reject) => {
+    questionModel.question.questionClass.findAll({
+      where: {
+        id: id
+      }
+    }).then(topicObj => {
+      resolve(topicObj)
+    }, () => {
+      reject(false)
+    })
+  })
+}
+
+function getQuestions () {
+  return new Promise((resolve, reject) => {
+    questionModel.question.questionClass.findAll({}).then(results => {
+      resolve(results)
+    }, () => {
+      reject(false)
+    })
+  })
+}
+
+// implement + tests
+
+function addAnswer (content) {
+  return answerModel.answer.answerClass.create({
+    answer: content
+  }).then(result => {
+    return result.id
+  }, () => {
+    return false
+  })
+}
+
+function updateAnswer (newAnswer, answerId) {
+  return new Promise((resolve, reject) => {
+    answerModel.answer.answerClass.update({
+      answer: newAnswer
+    }, {where: {id: answerId}})
+      .then(() => resolve())
+      .catch(() => reject(false))
+  })
+}
+
+function deleteAnswer (answerId) {
+  answerModel.answer.answerClass.destroy({
+    where: {
+      id: answerId
+    }
+  })
+}
+
+function getAnswer (answerId) {
+  return new Promise((resolve, reject) => {
+    answerModel.answer.answerClass.findAll({
+      where: {
+        id: answerId
+      }
+    }).then(answerObj => {
+      resolve(answerObj)
+    }, () => {
+      reject(false)
+    })
+  })
+}
+
+function getAnswers () {
+  return new Promise((resolve, reject) => {
+    answerModel.answer.answerClass.findAll({}).then(results => {
+      resolve(results)
+    }, () => {
+      reject(false)
+    })
+  })
+}
