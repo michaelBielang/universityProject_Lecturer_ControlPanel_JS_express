@@ -103,7 +103,7 @@ describe('test get topics from db', function () {
 
 describe('test get topic from db', function () {
   const db = require('../../src/controller/db_controller')
-  var id
+  let id
   before(async function () {
     await db.dbInterface.addTopic('topicTest').then(objId => {
       id = objId
@@ -124,7 +124,7 @@ describe('test get topic from db', function () {
 
 describe('test delete topic from db', function () {
   const db = require('../../src/controller/db_controller')
-  var topicID
+  let topicID
   before(async function () {
     await db.dbInterface.addTopic('deleteTopicTest2').then((result) => {
       topicID = result
@@ -147,7 +147,7 @@ describe('test delete topic from db', function () {
 
 describe('test update topic in db', function () {
   const db = require('../../src/controller/db_controller')
-  var topicID
+  let topicID
   before(async function () {
     await db.dbInterface.addTopic('updateTopic').then((result) => {
       topicID = result
@@ -203,7 +203,7 @@ describe('test get subjects from db', function () {
 
 describe('test get subject from db', function () {
   const db = require('../../src/controller/db_controller')
-  var id
+  let id
   before(async function () {
     await db.dbInterface.addSubject('subjectTest').then(objId => {
       id = objId
@@ -224,7 +224,7 @@ describe('test get subject from db', function () {
 
 describe('test delete subject from db', function () {
   const db = require('../../src/controller/db_controller')
-  var topicID
+  let topicID
   before(async function () {
     await db.dbInterface.addSubject('deleteSubjectTest').then((result) => {
       topicID = result
@@ -247,7 +247,7 @@ describe('test delete subject from db', function () {
 
 describe('test update subject in db', function () {
   const db = require('../../src/controller/db_controller')
-  var topicID
+  let topicID
   before(async function () {
     await db.dbInterface.addSubject('updateSubject').then((result) => {
       topicID = result
@@ -303,7 +303,7 @@ describe('test get questions from db', function () {
 
 describe('test get question from db', function () {
   const db = require('../../src/controller/db_controller')
-  var id
+  let id
   before(async function () {
     await db.dbInterface.addQuestion('questionsTest').then(objId => {
       id = objId
@@ -324,7 +324,7 @@ describe('test get question from db', function () {
 
 describe('test delete question from db', function () {
   const db = require('../../src/controller/db_controller')
-  var topicID
+  let topicID
   before(async function () {
     await db.dbInterface.addQuestion('deleteQuestion').then((result) => {
       topicID = result
@@ -347,7 +347,7 @@ describe('test delete question from db', function () {
 
 describe('test update question in db', function () {
   const db = require('../../src/controller/db_controller')
-  var topicID
+  let topicID
   before(async function () {
     await db.dbInterface.addQuestion('updateQuestion').then((result) => {
       topicID = result
@@ -367,8 +367,6 @@ describe('test update question in db', function () {
     }
   )
 })
-
-//new
 
 describe('test add answer to db', function () {
   const db = require('../../src/controller/db_controller')
@@ -405,7 +403,7 @@ describe('test get answers from db', function () {
 
 describe('test get answer from db', function () {
   const db = require('../../src/controller/db_controller')
-  var id
+  let id
   before(async function () {
     await db.dbInterface.addAnswer('answerTest').then(objId => {
       id = objId
@@ -426,7 +424,7 @@ describe('test get answer from db', function () {
 
 describe('test delete answers from db', function () {
   const db = require('../../src/controller/db_controller')
-  var topicID
+  let topicID
   before(async function () {
     await db.dbInterface.addAnswer('deleteAnswer').then((result) => {
       topicID = result
@@ -449,7 +447,7 @@ describe('test delete answers from db', function () {
 
 describe('test update answer in db', function () {
   const db = require('../../src/controller/db_controller')
-  var topicID
+  let topicID
   before(async function () {
     await db.dbInterface.addAnswer('updateAnswer').then((result) => {
       topicID = result

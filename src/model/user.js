@@ -61,13 +61,12 @@ function initUser () {
     {
       sequelize,
       modelName: 'user'
-    }
+    },
   )
 }
 
 /**
  * Makes functions available globally
- * @type {{userClass: User, initUser: (function(): Promise<*>)}}
  */
 exports.user = {
   initUser: initUser,

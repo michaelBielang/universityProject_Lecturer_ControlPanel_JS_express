@@ -191,11 +191,11 @@ function addSubject (subjectName) {
   })
 }
 
-function updateSubject (subjectName, new_id) {
+function updateSubject (subjectName, id) {
   return new Promise((resolve, reject) => {
     subjectModel.subject.subjectClass.update({
       subjectName: subjectName
-    }, {where: {id: new_id}})
+    }, {where: {id: id}})
       .then(() => resolve())
       .catch(() => reject(false))
   })
@@ -338,3 +338,4 @@ function getAnswers () {
     })
   })
 }
+

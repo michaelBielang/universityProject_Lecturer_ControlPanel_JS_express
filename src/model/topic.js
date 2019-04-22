@@ -38,8 +38,16 @@ function initTopic () {
       topicName: {
         type: Sequelize.STRING,
         allowNull: false
+      },
+      subjectId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'subjects',
+          key: 'id'
+        }
       }
     },
+
     // options
     {
       sequelize,

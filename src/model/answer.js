@@ -37,6 +37,13 @@ function initAnswer () {
       answer: {
         type: Sequelize.TEXT,
         allowNull: false
+      },
+      questionId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'questions',
+          key: 'id'
+        }
       }
     },
     // options

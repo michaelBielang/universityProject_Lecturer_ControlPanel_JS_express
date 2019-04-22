@@ -28,34 +28,37 @@ class Subject extends Sequelize.Model {
 }
 
 /**
+ * Initialises subject model
+ * @returns {Promise<*>}
+ */
+function initSubject () {
+  Subject.init(
+    // attributes
+    {
+      subjectName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'users',
+          key: 'id'
+        }
+      }
+    },
+    // options
+    {
+      sequelize,
+      modelName: 'subject'
+    }
+  )
+}
+
+/**
  * Makes functions globally available
- * @type {{initSubject: (function(): Promise<*>), subjectClass: Subject}}
  */
 exports.subject = {
   initSubject: initSubject,
   subjectClass: Subject
-}
-
-/**
- * Initialises subject model
- * @returns {Promise<*>}
- */
-async function initSubject () {
-  return new Promise(resolve => {
-    Subject.init(
-      // attributes
-      {
-        subjectName: {
-          type: Sequelize.STRING,
-          allowNull: false
-        }
-      },
-      // options
-      {
-        sequelize,
-        modelName: 'subject'
-      }
-    )
-    resolve()
-  })
 }
