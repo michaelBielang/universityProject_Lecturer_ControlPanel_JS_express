@@ -7,49 +7,18 @@
  * java version "10.0.1"
  */
 const Sequelize = require('sequelize')
-const dbController = require('../controller/db_controller')
+const db = require('../db/database').sequeliceInstance
 
-/**
- * Answer Model
- */
-class AnswerClass extends Sequelize.Model {
-}
+const answer = db.define('answer', {
+  // attributes
+  answer: {
+    type: Sequelize.TEXT,
+    allowNull: false
+  },
+  isCorrect: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false
+  }
+})
 
-/**
- * Initialises topic model
- */
-async function initAnswer () {
-  let sequelizeInstance
-  await dbController.dbInterface.getSequelizeConnection().then(resolve => {
-    console.log('resolved')
-    sequelizeInstance = resolve
-  }, () => {
-    console.log('reject123')
-  })
-  AnswerClass.init(
-    // attributes
-    {
-      answer: {
-        type: Sequelize.TEXT,
-        allowNull: false
-      },
-      isCorrect: {
-        type: Sequelize.TEXT,
-        allowNull: false
-      }
-    },
-    // options
-    {
-      sequelizeInstance,
-      modelName: 'answer'
-    }
-  )
-}
-
-/**
- * Makes functions globally available
- */
-exports.answer = {
-  initAnswer: initAnswer,
-  answerClass: AnswerClass
-}
+module.exports = answer

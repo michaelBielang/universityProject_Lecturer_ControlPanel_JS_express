@@ -7,62 +7,32 @@
  * java version "10.0.1"
  */
 
-const dbController = require('../controller/db_controller')
-const Sequelize = dbController.dbInterface.getSequelizeInstance()
+const Sequelize = require('sequelize')
+const db = require('../db/database').sequeliceInstance
 
-/**
- * User Model
- */
-class User extends Sequelize.Model {
-}
+const user = db.define('user', {
+  // attributes
+  firstName: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  lastName: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  title: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  password: {
+    type: Sequelize.TEXT,
+    allowNull: false
+  }
+})
 
-/**
- * Init user model
- */
+module.exports = user
 
-async function initUser () {
-  let sequelizeInstance
-  await dbController.dbInterface.getSequelizeConnection().then(resolve => {
-    sequelizeInstance = resolve
-  })
-  console.log('called')
-  //TODO optional realize with sequelize.transaction
-  User.init(
-    // attributes
-    {
-      firstName: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      lastName: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      title: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      password: {
-        type: Sequelize.TEXT,
-        allowNull: false
-      }
-    },
-    // options
-    {
-      sequelizeInstance,
-      modelName: 'user'
-    },
-  )
-}
-
-/**
- * Makes functions available globally
- */
-exports.user = {
-  initUser: initUser,
-  userClass: User
-}

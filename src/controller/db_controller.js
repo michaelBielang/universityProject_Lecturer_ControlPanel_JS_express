@@ -8,13 +8,12 @@
  */
 
 // important TODO -> user.sqlite is created where db_controller file is located. Make one global path possible
-const Sequelize = require('sequelize')
 const userModel = require('../model/user')
 const topicModel = require('../model/topic')
 const subjectModel = require('../model/subject')
 const questionModel = require('../model/question')
 const answerModel = require('../model/answer')
-let sequelize
+const database = require('../db/database').sequeliceInstance
 
 exports.dbInterface = {
   addUser: addUser,
@@ -43,53 +42,16 @@ exports.dbInterface = {
   deleteAnswer: deleteAnswer,
   getAnswer: getAnswer,
   getAnswers: getAnswers,
-  setupAssociations: setupAssociations,
-  getSequelizeConnection: getSequelizeConnection,
-  getSequelizeInstance: getSequelizeInstance
-}
-
-function getSequelizeInstance () {
-  return Sequelize
-}
-
-function getSequelizeConnection () {
-  return new Promise(async resolve => {
-    if (typeof sequelize === 'undefined') {
-      console.log('new')
-      sequelize = new Sequelize({
-        dialect: 'sqlite',
-        storage: './user.sqlite',
-        pool: {
-          max: 5,
-          min: 0,
-          acquire: 30000,
-          idle: 10000
-        },
-        logging: false
-      })
-    }
-    console.log('resolve')
-    await sequelize.sync()
-    resolve(sequelize)
-  })
+  setupAssociations: setupAssociations
 }
 
 function closeConnection () {
-  sequelize.close()
-}
-
-/**
- * Drops all tables -relevant for tests only
- * @returns {Promise<unknown[]>}
- */
-function dropDb () {
-  return Promise.all([topicModel.topic.topicClass.destroy({truncate: true}),
-    userModel.user.userClass.destroy({truncate: true})])
+  database.close()
 }
 
 function checkHealth () {
   return new Promise(((resolve, reject) => {
-    sequelize
+    database
       .authenticate()
       .then(() => {
         resolve(true)
@@ -100,9 +62,21 @@ function checkHealth () {
   }))
 }
 
+/**
+ * Drops all tables -relevant for tests only
+ * @returns {Promise<unknown[]>}
+ */
+function dropDb () {
+  return Promise.all([topicModel.destroy({truncate: true}),
+    userModel.destroy({truncate: true}),
+    subjectModel.destroy({truncate: true}),
+    questionModel.destroy({truncate: true}),
+    answerModel.destroy({truncate: true})])
+}
+
 function addUser (firstName, lastName, email, title, password_encrypted) {
   // Create a new user
-  return userModel.user.userClass.create({
+  return userModel.create({
     firstName: firstName,
     lastName: lastName,
     email: email,
@@ -119,7 +93,7 @@ function addUser (firstName, lastName, email, title, password_encrypted) {
 
 function getUser (email) {
   return new Promise((resolve, reject) => {
-    userModel.user.userClass.findAll({
+    userModel.findAll({
       where: {
         email: email
       }
@@ -132,7 +106,7 @@ function getUser (email) {
 }
 
 function deleteUser (email) {
-  userModel.user.userClass.destroy({
+  userModel.destroy({
     where: {
       email: email
     }
@@ -140,7 +114,7 @@ function deleteUser (email) {
 }
 
 function addTopic (title) {
-  return topicModel.topic.topicClass.create({
+  return topicModel.create({
     topicName: title
   }).then(result => {
     return result.id
@@ -151,7 +125,7 @@ function addTopic (title) {
 
 function updateTopic (topicname, new_id) {
   return new Promise((resolve, reject) => {
-    topicModel.topic.topicClass.update({
+    topicModel.update({
       topicName: topicname
     }, {where: {id: new_id}})
       .then(() => resolve())
@@ -160,7 +134,7 @@ function updateTopic (topicname, new_id) {
 }
 
 function deleteTopic (id) {
-  topicModel.topic.topicClass.destroy({
+  topicModel.destroy({
     where: {
       id: id
     }
@@ -169,7 +143,7 @@ function deleteTopic (id) {
 
 function getTopic (id) {
   return new Promise((resolve, reject) => {
-    topicModel.topic.topicClass.findAll({
+    topicModel.findAll({
       where: {
         id: id
       }
@@ -183,7 +157,7 @@ function getTopic (id) {
 
 function getTopics () {
   return new Promise((resolve, reject) => {
-    topicModel.topic.topicClass.findAll({}).then(results => {
+    topicModel.findAll({}).then(results => {
       resolve(results)
     }, () => {
       reject(false)
@@ -192,7 +166,7 @@ function getTopics () {
 }
 
 function addSubject (subjectName) {
-  return subjectModel.subject.subjectClass.create({
+  return subjectModel.create({
     subjectName: subjectName
   }).then(result => {
     return result.id
@@ -203,7 +177,7 @@ function addSubject (subjectName) {
 
 function updateSubject (subjectName, id) {
   return new Promise((resolve, reject) => {
-    subjectModel.subject.subjectClass.update({
+    subjectModel.update({
       subjectName: subjectName
     }, {where: {id: id}})
       .then(() => resolve())
@@ -212,7 +186,7 @@ function updateSubject (subjectName, id) {
 }
 
 function deleteSubject (id) {
-  subjectModel.subject.subjectClass.destroy({
+  subjectModel.destroy({
     where: {
       id: id
     }
@@ -221,7 +195,7 @@ function deleteSubject (id) {
 
 function getSubject (id) {
   return new Promise((resolve, reject) => {
-    subjectModel.subject.subjectClass.findAll({
+    subjectModel.findAll({
       where: {
         id: id
       }
@@ -235,7 +209,7 @@ function getSubject (id) {
 
 function getSubjects () {
   return new Promise((resolve, reject) => {
-    subjectModel.subject.subjectClass.findAll({}).then(results => {
+    subjectModel.findAll({}).then(results => {
       resolve(results)
     }, err => {
       console.log(err)
@@ -245,7 +219,7 @@ function getSubjects () {
 }
 
 function addQuestion (content) {
-  return questionModel.question.questionClass.create({
+  return questionModel.create({
     question: content
   }).then(result => {
     return result.id
@@ -256,7 +230,7 @@ function addQuestion (content) {
 
 function updateQuestion (newQuestion, questionId) {
   return new Promise((resolve, reject) => {
-    questionModel.question.questionClass.update({
+    questionModel.update({
       question: newQuestion
     }, {where: {id: questionId}})
       .then(() => resolve())
@@ -265,7 +239,7 @@ function updateQuestion (newQuestion, questionId) {
 }
 
 function deleteQuestion (id) {
-  questionModel.question.questionClass.destroy({
+  questionModel.destroy({
     where: {
       id: id
     }
@@ -274,7 +248,7 @@ function deleteQuestion (id) {
 
 function getQuestion (id) {
   return new Promise((resolve, reject) => {
-    questionModel.question.questionClass.findAll({
+    questionModel.findAll({
       where: {
         id: id
       }
@@ -288,7 +262,7 @@ function getQuestion (id) {
 
 function getQuestions () {
   return new Promise((resolve, reject) => {
-    questionModel.question.questionClass.findAll({}).then(results => {
+    questionModel.findAll({}).then(results => {
       resolve(results)
     }, () => {
       reject(false)
@@ -298,9 +272,10 @@ function getQuestions () {
 
 // implement + tests
 
-function addAnswer (content) {
-  return answerModel.answer.answerClass.create({
-    answer: content
+function addAnswer (content, isCorrect) {
+  return answerModel.create({
+    answer: content,
+    isCorrect: isCorrect
   }).then(result => {
     return result.id
   }, () => {
@@ -310,7 +285,7 @@ function addAnswer (content) {
 
 function updateAnswer (newAnswer, answerId) {
   return new Promise((resolve, reject) => {
-    answerModel.answer.answerClass.update({
+    answerModel.update({
       answer: newAnswer
     }, {where: {id: answerId}})
       .then(() => resolve())
@@ -319,7 +294,7 @@ function updateAnswer (newAnswer, answerId) {
 }
 
 function deleteAnswer (answerId) {
-  answerModel.answer.answerClass.destroy({
+  answerModel.destroy({
     where: {
       id: answerId
     }
@@ -328,7 +303,7 @@ function deleteAnswer (answerId) {
 
 function getAnswer (answerId) {
   return new Promise((resolve, reject) => {
-    answerModel.answer.answerClass.findAll({
+    answerModel.findAll({
       where: {
         id: answerId
       }
@@ -342,7 +317,7 @@ function getAnswer (answerId) {
 
 function getAnswers () {
   return new Promise((resolve, reject) => {
-    answerModel.answer.answerClass.findAll({}).then(results => {
+    answerModel.findAll({}).then(results => {
       resolve(results)
     }, () => {
       reject(false)
@@ -351,22 +326,7 @@ function getAnswers () {
 }
 
 async function setupAssociations () {
-  await getSequelizeConnection()
-
-  userModel.user.initUser()
-  addUser('a', 'b', 'c', 'd', 'e')
-
-  // eslint-disable-next-line no-unused-vars
-  // const initUser = userModel.user.initUser()
-  /*
-// eslint-disable-next-line no-unused-vars
-  const initTopic = topicModel.topic.initTopic()
-// eslint-disable-next-line no-unused-vars
-  const initSubject = subjectModel.subject.initSubject()
-// eslint-disable-next-line no-unused-vars
-  const initQuestion = questionModel.question.initQuestion()
-// eslint-disable-next-line no-unused-vars
-  const initAnswer = answerModel.answer.initAnswer()*/
+  await database.sync()
 
   /*  userModel.user.userClass.hasMany(subjectModel.subject.subjectClass)
     subjectModel.subject.subjectClass.belongsTo(userModel.user.userClass)
@@ -386,5 +346,4 @@ async function setupAssociations () {
   return Promise.resolve()
 }
 
-setupAssociations()
 

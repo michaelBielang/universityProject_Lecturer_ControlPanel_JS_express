@@ -7,46 +7,16 @@
  * java version "10.0.1"
  */
 const Sequelize = require('sequelize')
-const dbController = require('../controller/db_controller')
-
-
-/**
- // * Topic Model
- */
-class Topic extends Sequelize.Model {
-}
-
+const db = require('../db/database').sequeliceInstance
 /**
  * Initialises topic model
  */
-async function initTopic () {
-  let sequelizeInstance
-  await dbController.dbInterface.getSequelizeConnection().then(resolve => {
-    console.log('resolved')
-    sequelizeInstance = resolve
-  }, () => {
-    console.log('reject123')
-  })
-  Topic.init(
-    // attributes
-    {
-      topicName: {
-        type: Sequelize.TEXT,
-        allowNull: false
-      }
-    },
-    // options
-    {
-      sequelizeInstance,
-      modelName: 'topic'
-    }
-  )
-}
+const topic = db.define('topic', {
+  // attributes
+  topicName: {
+    type: Sequelize.TEXT,
+    allowNull: false
+  }
+})
 
-/**
- * Makes functions globally available
- */
-exports.topic = {
-  initTopic: initTopic,
-  topicClass: Topic
-}
+module.exports = topic
