@@ -14,28 +14,7 @@ const topicModel = require('../model/topic')
 const subjectModel = require('../model/subject')
 const questionModel = require('../model/question')
 const answerModel = require('../model/answer')
-// eslint-disable-next-line no-unused-vars
-const initUser = userModel.user.initUser()
-// eslint-disable-next-line no-unused-vars
-const initTopic = topicModel.topic.initTopic()
-// eslint-disable-next-line no-unused-vars
-const initSubject = subjectModel.subject.initSubject()
-// eslint-disable-next-line no-unused-vars
-const initQuestion = questionModel.question.initQuestion()
-// eslint-disable-next-line no-unused-vars
-const initAnswer = answerModel.answer.initAnswer()
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './user.sqlite',
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  logging: false
-})
-sequelize.sync()
+let sequelize
 
 exports.dbInterface = {
   addUser: addUser,
@@ -63,7 +42,36 @@ exports.dbInterface = {
   updateAnswer: updateAnswer,
   deleteAnswer: deleteAnswer,
   getAnswer: getAnswer,
-  getAnswers: getAnswers
+  getAnswers: getAnswers,
+  setupAssociations: setupAssociations,
+  getSequelizeConnection: getSequelizeConnection,
+  getSequelizeInstance: getSequelizeInstance
+}
+
+function getSequelizeInstance () {
+  return Sequelize
+}
+
+function getSequelizeConnection () {
+  return new Promise(async resolve => {
+    if (typeof sequelize === 'undefined') {
+      console.log('new')
+      sequelize = new Sequelize({
+        dialect: 'sqlite',
+        storage: './user.sqlite',
+        pool: {
+          max: 5,
+          min: 0,
+          acquire: 30000,
+          idle: 10000
+        },
+        logging: false
+      })
+    }
+    console.log('resolve')
+    await sequelize.sync()
+    resolve(sequelize)
+  })
 }
 
 function closeConnection () {
@@ -101,8 +109,10 @@ function addUser (firstName, lastName, email, title, password_encrypted) {
     title: title,
     password: password_encrypted
   }).then(userObj => {
+    console.log('success')
     return userObj.id
-  }, () => {
+  }, err => {
+    console.log(err)
     return false
   })
 }
@@ -227,7 +237,8 @@ function getSubjects () {
   return new Promise((resolve, reject) => {
     subjectModel.subject.subjectClass.findAll({}).then(results => {
       resolve(results)
-    }, () => {
+    }, err => {
+      console.log(err)
       reject(false)
     })
   })
@@ -339,12 +350,41 @@ function getAnswers () {
   })
 }
 
-function setupAssociation(){
-  userModel.user.userClass.hasOne(subjectModel.subject.subjectClass)
-  subjectModel.subject.subjectClass.belongsTo(userModel.user.userClass)
+async function setupAssociations () {
+  await getSequelizeConnection()
 
-  topicModel.topic.topicClass.hasOne(subjectModel.subject.subjectClass)
-  subjectModel.subject.subjectClass.belongsTo(topicModel.topic.topicClass)
+  userModel.user.initUser()
+  addUser('a', 'b', 'c', 'd', 'e')
+
+  // eslint-disable-next-line no-unused-vars
+  // const initUser = userModel.user.initUser()
+  /*
+// eslint-disable-next-line no-unused-vars
+  const initTopic = topicModel.topic.initTopic()
+// eslint-disable-next-line no-unused-vars
+  const initSubject = subjectModel.subject.initSubject()
+// eslint-disable-next-line no-unused-vars
+  const initQuestion = questionModel.question.initQuestion()
+// eslint-disable-next-line no-unused-vars
+  const initAnswer = answerModel.answer.initAnswer()*/
+
+  /*  userModel.user.userClass.hasMany(subjectModel.subject.subjectClass)
+    subjectModel.subject.subjectClass.belongsTo(userModel.user.userClass)
+
+    // subject and topic
+    subjectModel.subject.subjectClass.hasMany(topicModel.topic.topicClass)
+    topicModel.topic.topicClass.belongsTo(subjectModel.subject.subjectClass)
+
+    // topic and question
+    topicModel.topic.topicClass.hasMany(questionModel.question.questionClass)
+    questionModel.question.questionClass.belongsTo(topicModel.topic.topicClass)
+
+    // question and answer
+    questionModel.question.questionClass.hasMany(answerModel.answer.answerClass)
+    answerModel.answer.answerClass.belongsTo(questionModel.question.questionClass)
+    console.log('resolve2')*/
+  return Promise.resolve()
 }
 
-setupAssociation()
+setupAssociations()
+

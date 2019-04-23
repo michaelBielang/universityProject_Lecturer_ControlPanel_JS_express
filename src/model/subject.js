@@ -6,20 +6,8 @@
  * Project:
  * java version "10.0.1"
  */
-
 const Sequelize = require('sequelize')
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: '../controller/user.sqlite',
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  logging: false
-})
-sequelize.sync()
+const dbController = require('../controller/db_controller')
 
 /**
  // * Subject Model
@@ -29,20 +17,26 @@ class Subject extends Sequelize.Model {
 
 /**
  * Initialises subject model
- * @returns {Promise<*>}
  */
-function initSubject () {
+async function initSubject () {
+  let sequelizeInstance
+  await dbController.dbInterface.getSequelizeConnection().then(resolve => {
+    console.log('resolved')
+    sequelizeInstance = resolve
+  }, () => {
+    console.log('reject123')
+  })
   Subject.init(
     // attributes
     {
       subjectName: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false
       }
     },
     // options
     {
-      sequelize,
+      sequelizeInstance,
       modelName: 'subject'
     }
   )

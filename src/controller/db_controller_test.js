@@ -16,8 +16,12 @@ let mocha = require('mocha')
 const describe = mocha.describe
 const expect = require('chai').expect
 
-describe('test add user db', function () {
+/*describe('test add user db', function () {
   const db = require('../../src/controller/db_controller')
+  before(async function () {
+    db.dbInterface.setupAssociations()
+    await new Promise(resolve => setTimeout(resolve, 250))
+  })
   it('should work', async function () {
     await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e').then((result) => {
       expect(isNaN(result)).equal(false)
@@ -32,6 +36,7 @@ describe('test add user db', function () {
 
 describe('test get user db', function () {
   before(async function () {
+    db.dbInterface.setupAssociations()
     await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e').then(() => {
       return Promise.resolve()
     })
@@ -51,6 +56,7 @@ describe('test get user db', function () {
 
 describe('test delete user db', function () {
   before(async function () {
+    db.dbInterface.setupAssociations()
     await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e').then(() => {
       return Promise.resolve()
     })
@@ -71,6 +77,7 @@ describe('test delete user db', function () {
 describe('test add topic to db', function () {
   const db = require('../../src/controller/db_controller')
   it('should work', async function () {
+    db.dbInterface.setupAssociations()
     await db.dbInterface.addTopic('test').then((result) => {
       expect(isNaN(result)).equal(false)
       return Promise.resolve()
@@ -85,6 +92,7 @@ describe('test add topic to db', function () {
 describe('test get topics from db', function () {
   const db = require('../../src/controller/db_controller')
   before(async function () {
+    db.dbInterface.setupAssociations()
     await db.dbInterface.addTopic('topicTest').then(() => {
       return Promise.resolve()
     })
@@ -105,6 +113,7 @@ describe('test get topic from db', function () {
   const db = require('../../src/controller/db_controller')
   let id
   before(async function () {
+    db.dbInterface.setupAssociations()
     await db.dbInterface.addTopic('topicTest').then(objId => {
       id = objId
       return Promise.resolve()
@@ -126,6 +135,7 @@ describe('test delete topic from db', function () {
   const db = require('../../src/controller/db_controller')
   let topicID
   before(async function () {
+    db.dbInterface.setupAssociations()
     await db.dbInterface.addTopic('deleteTopicTest2').then((result) => {
       topicID = result
       return Promise.resolve()
@@ -149,6 +159,7 @@ describe('test update topic in db', function () {
   const db = require('../../src/controller/db_controller')
   let topicID
   before(async function () {
+    db.dbInterface.setupAssociations()
     await db.dbInterface.addTopic('updateTopic').then((result) => {
       topicID = result
       return Promise.resolve()
@@ -170,6 +181,10 @@ describe('test update topic in db', function () {
 
 describe('test add subject to db', function () {
   const db = require('../../src/controller/db_controller')
+  before(async () => {
+    db.dbInterface.setupAssociations()
+    await new Promise(resolve => setTimeout(resolve, 250))
+  })
   it('should work', async function () {
     await db.dbInterface.addSubject('subjectTest').then((result) => {
       expect(isNaN(result)).equal(false)
@@ -180,10 +195,10 @@ describe('test add subject to db', function () {
       await db.dbInterface.dropDb()
     }
   )
-})
+})*/
 
 describe('test get subjects from db', function () {
-  const db = require('../../src/controller/db_controller')
+  const db = require('./db_controller')
   before(async function () {
     await db.dbInterface.addSubject('subjectTest').then(() => {
       return Promise.resolve()
@@ -191,6 +206,7 @@ describe('test get subjects from db', function () {
   })
   it('should work', async function () {
     await db.dbInterface.getSubjects().then((result) => {
+      console.log(result)
       expect(JSON.stringify(result).includes('subjectTest')).equal(true)
       return Promise.resolve()
     })
@@ -200,11 +216,12 @@ describe('test get subjects from db', function () {
     }
   )
 })
-
+/*
 describe('test get subject from db', function () {
-  const db = require('../../src/controller/db_controller')
+  const db = require('./db_controller')
   let id
   before(async function () {
+    await db.dbInterface.setupAssociations()
     await db.dbInterface.addSubject('subjectTest').then(objId => {
       id = objId
       return Promise.resolve()
@@ -223,9 +240,10 @@ describe('test get subject from db', function () {
 })
 
 describe('test delete subject from db', function () {
-  const db = require('../../src/controller/db_controller')
+  const db = require('./db_controller')
   let topicID
   before(async function () {
+    await db.dbInterface.setupAssociations()
     await db.dbInterface.addSubject('deleteSubjectTest').then((result) => {
       topicID = result
       return Promise.resolve()
@@ -243,12 +261,14 @@ describe('test delete subject from db', function () {
       await db.dbInterface.dropDb()
     }
   )
-})
+})*/
 
+/*
 describe('test update subject in db', function () {
   const db = require('../../src/controller/db_controller')
   let topicID
   before(async function () {
+    db.dbInterface.setupAssociations()
     await db.dbInterface.addSubject('updateSubject').then((result) => {
       topicID = result
       return Promise.resolve()
@@ -467,3 +487,4 @@ describe('test update answer in db', function () {
     }
   )
 })
+*/

@@ -6,19 +6,9 @@
  * Project:
  * java version "10.0.1"
  */
-const Sequelize = require('sequelize')
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: '../controller/user.sqlite',
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  logging: false
-})
-sequelize.sync()
+
+const dbController = require('../controller/db_controller')
+const Sequelize = dbController.dbInterface.getSequelizeInstance()
 
 /**
  * User Model
@@ -28,10 +18,14 @@ class User extends Sequelize.Model {
 
 /**
  * Init user model
- * @returns {Promise<*>}
  */
 
-function initUser () {
+async function initUser () {
+  let sequelizeInstance
+  await dbController.dbInterface.getSequelizeConnection().then(resolve => {
+    sequelizeInstance = resolve
+  })
+  console.log('called')
   //TODO optional realize with sequelize.transaction
   User.init(
     // attributes
@@ -59,7 +53,7 @@ function initUser () {
     },
     // options
     {
-      sequelize,
+      sequelizeInstance,
       modelName: 'user'
     },
   )

@@ -7,18 +7,7 @@
  * java version "10.0.1"
  */
 const Sequelize = require('sequelize')
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: '../controller/user.sqlite',
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  logging: false
-})
-sequelize.sync()
+const dbController = require('../controller/db_controller')
 
 /**
  * Answer Model
@@ -28,20 +17,30 @@ class AnswerClass extends Sequelize.Model {
 
 /**
  * Initialises topic model
- * @returns {Promise<*>}
  */
-function initAnswer () {
+async function initAnswer () {
+  let sequelizeInstance
+  await dbController.dbInterface.getSequelizeConnection().then(resolve => {
+    console.log('resolved')
+    sequelizeInstance = resolve
+  }, () => {
+    console.log('reject123')
+  })
   AnswerClass.init(
     // attributes
     {
       answer: {
         type: Sequelize.TEXT,
         allowNull: false
+      },
+      isCorrect: {
+        type: Sequelize.TEXT,
+        allowNull: false
       }
     },
     // options
     {
-      sequelize,
+      sequelizeInstance,
       modelName: 'answer'
     }
   )
@@ -49,7 +48,6 @@ function initAnswer () {
 
 /**
  * Makes functions globally available
- * @type {{subjectClass: AnswerClass, initAnswer: (function(): Promise<*>)}}
  */
 exports.answer = {
   initAnswer: initAnswer,

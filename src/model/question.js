@@ -7,18 +7,7 @@
  * java version "10.0.1"
  */
 const Sequelize = require('sequelize')
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: '../controller/user.sqlite',
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  logging: false
-})
-sequelize.sync()
+const dbController = require('../controller/db_controller')
 
 /**
  * Question Model
@@ -26,7 +15,14 @@ sequelize.sync()
 class Question extends Sequelize.Model {
 }
 
-function initQuestion () {
+async function initQuestion () {
+  let sequelizeInstance
+  await dbController.dbInterface.getSequelizeConnection().then(resolve => {
+    console.log('resolved')
+    sequelizeInstance = resolve
+  }, () => {
+    console.log('reject123')
+  })
   Question.init(
     // attributes
     {
@@ -37,7 +33,7 @@ function initQuestion () {
     },
     // options
     {
-      sequelize,
+      sequelizeInstance,
       modelName: 'question'
     }
   )
@@ -45,7 +41,6 @@ function initQuestion () {
 
 /**
  * Makes functions available globally
- * @type {{questionClass: Question, initQuestion: (function(): Promise<*>)}}
  */
 exports.question = {
   initQuestion: initQuestion,

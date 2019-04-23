@@ -6,20 +6,9 @@
  * Project:
  * java version "10.0.1"
  */
-
 const Sequelize = require('sequelize')
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: '../controller/user.sqlite',
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  logging: false
-})
-sequelize.sync()
+const dbController = require('../controller/db_controller')
+
 
 /**
  // * Topic Model
@@ -29,27 +18,26 @@ class Topic extends Sequelize.Model {
 
 /**
  * Initialises topic model
- * @returns {Promise<*>}
  */
-function initTopic () {
+async function initTopic () {
+  let sequelizeInstance
+  await dbController.dbInterface.getSequelizeConnection().then(resolve => {
+    console.log('resolved')
+    sequelizeInstance = resolve
+  }, () => {
+    console.log('reject123')
+  })
   Topic.init(
     // attributes
     {
       topicName: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false
-      },
-      subjectId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'subjects',
-          key: 'id'
-        }
       }
     },
     // options
     {
-      sequelize,
+      sequelizeInstance,
       modelName: 'topic'
     }
   )
@@ -57,7 +45,6 @@ function initTopic () {
 
 /**
  * Makes functions globally available
- * @type {{initTopic: (function(): Promise<*>), topicClass: Topic}}
  */
 exports.topic = {
   initTopic: initTopic,
