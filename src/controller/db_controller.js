@@ -339,3 +339,12 @@ function getAnswers () {
   })
 }
 
+function setupAssociation(){
+  userModel.user.userClass.hasOne(subjectModel.subject.subjectClass)
+  subjectModel.subject.subjectClass.belongsTo(userModel.user.userClass)
+
+  topicModel.topic.topicClass.hasOne(subjectModel.subject.subjectClass)
+  subjectModel.subject.subjectClass.belongsTo(topicModel.topic.topicClass)
+}
+
+setupAssociation()

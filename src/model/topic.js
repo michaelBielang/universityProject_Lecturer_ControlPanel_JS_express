@@ -47,7 +47,6 @@ function initTopic () {
         }
       }
     },
-
     // options
     {
       sequelize,

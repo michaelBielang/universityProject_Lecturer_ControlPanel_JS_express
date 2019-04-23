@@ -38,13 +38,6 @@ function initSubject () {
       subjectName: {
         type: Sequelize.STRING,
         allowNull: false
-      },
-      userId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
       }
     },
     // options
