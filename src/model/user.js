@@ -9,6 +9,7 @@
 
 const Sequelize = require('sequelize')
 const db = require('../db/database').sequeliceInstance
+db.sync()
 
 const user = db.define('user', {
   // attributes

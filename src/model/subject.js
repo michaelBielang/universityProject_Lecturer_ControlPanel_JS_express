@@ -9,7 +9,6 @@
 const Sequelize = require('sequelize')
 const db = require('../db/database').sequeliceInstance
 
-
 const subject = db.define('subject', {
   // attributes
   subjectName: {

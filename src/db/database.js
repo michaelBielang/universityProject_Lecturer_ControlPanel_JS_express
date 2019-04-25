@@ -8,10 +8,12 @@
  */
 
 const Sequelize = require('sequelize')
+const path = require('path')
+const dbPath = path.join(__dirname, './cpse.sqlite')
 
 exports.sequeliceInstance = new Sequelize({
   dialect: 'sqlite',
-  storage: './user.sqlite',
+  storage: dbPath,
   pool: {
     max: 5,
     min: 0,

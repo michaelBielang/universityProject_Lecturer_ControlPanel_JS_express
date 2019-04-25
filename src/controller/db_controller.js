@@ -45,10 +45,17 @@ exports.dbInterface = {
   setupAssociations: setupAssociations
 }
 
+/**
+ * close Connection
+ */
 function closeConnection () {
   database.close()
 }
 
+/**
+ * returns true if db connection works
+ * @returns {Promise<any>}
+ */
 function checkHealth () {
   return new Promise(((resolve, reject) => {
     database
@@ -74,6 +81,15 @@ function dropDb () {
     answerModel.destroy({truncate: true})])
 }
 
+/**
+ * returns user id or false in error case
+ * @param firstName
+ * @param lastName
+ * @param email
+ * @param title
+ * @param password_encrypted
+ * @returns {Promise<number> | Promise<boolean>}
+ */
 function addUser (firstName, lastName, email, title, password_encrypted) {
   // Create a new user
   return userModel.create({
@@ -83,14 +99,17 @@ function addUser (firstName, lastName, email, title, password_encrypted) {
     title: title,
     password: password_encrypted
   }).then(userObj => {
-    console.log('success')
     return userObj.id
-  }, err => {
-    console.log(err)
+  }, () => {
     return false
   })
 }
 
+/**
+ * returns user id or false in error case
+ * @param email
+ * @returns {Promise<number> | Promise<boolean>}
+ */
 function getUser (email) {
   return new Promise((resolve, reject) => {
     userModel.findAll({
@@ -105,6 +124,10 @@ function getUser (email) {
   })
 }
 
+/**
+ *
+ * @param email
+ */
 function deleteUser (email) {
   userModel.destroy({
     where: {
@@ -113,9 +136,16 @@ function deleteUser (email) {
   })
 }
 
-function addTopic (title) {
+/**
+ * returns id or false if fails
+ * @param title
+ * @param subjectId
+ * @returns {Promise<number> | Promise<boolean>}}
+ */
+function addTopic (title, subjectId) {
   return topicModel.create({
-    topicName: title
+    topicName: title,
+    subjectId: subjectId
   }).then(result => {
     return result.id
   }, () => {
@@ -123,16 +153,26 @@ function addTopic (title) {
   })
 }
 
-function updateTopic (topicname, new_id) {
+/**
+ *  returns topic id or false if fails
+ * @param newTopicName
+ * @param topicId
+ * @returns {Promise<number> | Promise<boolean>}
+ */
+function updateTopic (newTopicName, topicId) {
   return new Promise((resolve, reject) => {
     topicModel.update({
-      topicName: topicname
-    }, {where: {id: new_id}})
-      .then(() => resolve())
+      topicName: newTopicName
+    }, {where: {id: topicId}})
+      .then(() => resolve(true))
       .catch(() => reject(false))
   })
 }
 
+/**
+ *
+ * @param id
+ */
 function deleteTopic (id) {
   topicModel.destroy({
     where: {
@@ -141,6 +181,11 @@ function deleteTopic (id) {
   })
 }
 
+/**
+ *
+ * @param id
+ * @returns {Promise<any> | Promise<boolean>}
+ */
 function getTopic (id) {
   return new Promise((resolve, reject) => {
     topicModel.findAll({
@@ -155,9 +200,17 @@ function getTopic (id) {
   })
 }
 
-function getTopics () {
+/**
+ * returns a list of topics for particular subject.
+ * @returns {Promise<any> | Promise<boolean>}
+ */
+function getTopics (subjectId) {
   return new Promise((resolve, reject) => {
-    topicModel.findAll({}).then(results => {
+    topicModel.findAll({
+      where: {
+        subjectId: subjectId
+      }
+    }).then(results => {
       resolve(results)
     }, () => {
       reject(false)
@@ -165,9 +218,16 @@ function getTopics () {
   })
 }
 
-function addSubject (subjectName) {
+/**
+ * Returns id or false if fails
+ * @param subjectName
+ * @param userId
+ * @returns {PromiseLike<number> | Promise<boolean>}
+ */
+function addSubject (subjectName, userId) {
   return subjectModel.create({
-    subjectName: subjectName
+    subjectName: subjectName,
+    userId: userId
   }).then(result => {
     return result.id
   }, () => {
@@ -175,29 +235,44 @@ function addSubject (subjectName) {
   })
 }
 
-function updateSubject (subjectName, id) {
+/**
+ *
+ * @param subjectName
+ * @param subjectId
+ * @returns {Promise<any>}
+ */
+function updateSubject (subjectName, subjectId) {
   return new Promise((resolve, reject) => {
     subjectModel.update({
       subjectName: subjectName
-    }, {where: {id: id}})
-      .then(() => resolve())
+    }, {where: {id: subjectId}})
+      .then(() => resolve(true))
       .catch(() => reject(false))
   })
 }
 
-function deleteSubject (id) {
+/**
+ *
+ * @param subjectId
+ */
+function deleteSubject (subjectId) {
   subjectModel.destroy({
     where: {
-      id: id
+      id: subjectId
     }
   })
 }
 
-function getSubject (id) {
+/**
+ *
+ * @param subjectId
+ * @returns {Promise<any> | Promise<boolean>}
+ */
+function getSubject (subjectId) {
   return new Promise((resolve, reject) => {
     subjectModel.findAll({
       where: {
-        id: id
+        id: subjectId
       }
     }).then(topicObj => {
       resolve(topicObj)
@@ -207,20 +282,32 @@ function getSubject (id) {
   })
 }
 
-function getSubjects () {
+/**
+ *
+ * @returns {Promise<any> | Promise<boolean>}
+ */
+function getSubjects (userId) {
   return new Promise((resolve, reject) => {
-    subjectModel.findAll({}).then(results => {
+    subjectModel.findAll({
+      where: {userId: userId}
+    }).then(results => {
       resolve(results)
-    }, err => {
-      console.log(err)
+    }, () => {
       reject(false)
     })
   })
 }
 
-function addQuestion (content) {
+/**
+ *
+ * @param question
+ * @param topicId
+ * @returns {PromiseLike<T | boolean> | Promise<T | boolean>}
+ */
+function addQuestion (question, topicId) {
   return questionModel.create({
-    question: content
+    question: question,
+    topicId: topicId
   }).then(result => {
     return result.id
   }, () => {
@@ -228,6 +315,12 @@ function addQuestion (content) {
   })
 }
 
+/**
+ *
+ * @param newQuestion
+ * @param questionId
+ * @returns {Promise<any>}
+ */
 function updateQuestion (newQuestion, questionId) {
   return new Promise((resolve, reject) => {
     questionModel.update({
@@ -238,19 +331,28 @@ function updateQuestion (newQuestion, questionId) {
   })
 }
 
-function deleteQuestion (id) {
+/**
+ *
+ * @param questionId
+ */
+function deleteQuestion (questionId) {
   questionModel.destroy({
     where: {
-      id: id
+      id: questionId
     }
   })
 }
 
-function getQuestion (id) {
+/**
+ *
+ * @param questionId
+ * @returns {Promise<any>}
+ */
+function getQuestion (questionId) {
   return new Promise((resolve, reject) => {
     questionModel.findAll({
       where: {
-        id: id
+        id: questionId
       }
     }).then(topicObj => {
       resolve(topicObj)
@@ -260,9 +362,17 @@ function getQuestion (id) {
   })
 }
 
-function getQuestions () {
+/**
+ *
+ * @returns {Promise<any>}
+ */
+function getQuestions (topicId) {
   return new Promise((resolve, reject) => {
-    questionModel.findAll({}).then(results => {
+    questionModel.findAll({
+      where: {
+        topicId: topicId
+      }
+    }).then(results => {
       resolve(results)
     }, () => {
       reject(false)
@@ -270,12 +380,18 @@ function getQuestions () {
   })
 }
 
-// implement + tests
-
-function addAnswer (content, isCorrect) {
+/**
+ *
+ * @param content
+ * @param isCorrect
+ * @param questionId
+ * @returns {PromiseLike<T | boolean> | Promise<T | boolean>}
+ */
+function addAnswer (content, isCorrect, questionId) {
   return answerModel.create({
     answer: content,
-    isCorrect: isCorrect
+    isCorrect: isCorrect,
+    questionId: questionId
   }).then(result => {
     return result.id
   }, () => {
@@ -283,6 +399,12 @@ function addAnswer (content, isCorrect) {
   })
 }
 
+/**
+ *
+ * @param newAnswer
+ * @param answerId
+ * @returns {Promise<any>}
+ */
 function updateAnswer (newAnswer, answerId) {
   return new Promise((resolve, reject) => {
     answerModel.update({
@@ -293,6 +415,10 @@ function updateAnswer (newAnswer, answerId) {
   })
 }
 
+/**
+ *
+ * @param answerId
+ */
 function deleteAnswer (answerId) {
   answerModel.destroy({
     where: {
@@ -301,6 +427,11 @@ function deleteAnswer (answerId) {
   })
 }
 
+/**
+ *
+ * @param answerId
+ * @returns {Promise<any>}
+ */
 function getAnswer (answerId) {
   return new Promise((resolve, reject) => {
     answerModel.findAll({
@@ -315,9 +446,17 @@ function getAnswer (answerId) {
   })
 }
 
-function getAnswers () {
+/**
+ *
+ * @returns {Promise<any>}
+ */
+function getAnswers (questionId) {
   return new Promise((resolve, reject) => {
-    answerModel.findAll({}).then(results => {
+    answerModel.findAll({
+      where: {
+        questionId: questionId
+      }
+    }).then(results => {
       resolve(results)
     }, () => {
       reject(false)
@@ -325,25 +464,28 @@ function getAnswers () {
   })
 }
 
+/**
+ *
+ * @returns {Promise<void>}
+ */
 async function setupAssociations () {
+
+  // user + subject
+  userModel.hasMany(subjectModel)
+  subjectModel.belongsTo(userModel)
+
+  // subject and topic
+  subjectModel.hasMany(topicModel)
+  topicModel.belongsTo(subjectModel)
+
+  // topic and question
+  topicModel.hasMany(questionModel)
+  questionModel.belongsTo(topicModel)
+
+  // question and answer
+  questionModel.hasMany(answerModel)
+  answerModel.belongsTo(questionModel)
   await database.sync()
-
-  /*  userModel.user.userClass.hasMany(subjectModel.subject.subjectClass)
-    subjectModel.subject.subjectClass.belongsTo(userModel.user.userClass)
-
-    // subject and topic
-    subjectModel.subject.subjectClass.hasMany(topicModel.topic.topicClass)
-    topicModel.topic.topicClass.belongsTo(subjectModel.subject.subjectClass)
-
-    // topic and question
-    topicModel.topic.topicClass.hasMany(questionModel.question.questionClass)
-    questionModel.question.questionClass.belongsTo(topicModel.topic.topicClass)
-
-    // question and answer
-    questionModel.question.questionClass.hasMany(answerModel.answer.answerClass)
-    answerModel.answer.answerClass.belongsTo(questionModel.question.questionClass)
-    console.log('resolve2')*/
   return Promise.resolve()
 }
-
 
