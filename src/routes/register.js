@@ -9,13 +9,13 @@
 
 const express = require('express')
 const {body, validationResult} = require('express-validator/check')
-const {dbFunctions} = require('../controller/db_controller')
+const database = require('../controller/db_controller')
 
-var router = express.Router()
+const router = express.Router()
 
 /* GET home page. */
-router.get('/', function (req, res) {
-  console.log('here')
+router.get('/', async function (req, res) {
+  await database.dbInterface.initDb()
   res.render('register', {title: 'Register'})
 })
 
@@ -26,12 +26,14 @@ router.post('/', [
   body('password')
     .isLength({min: 1})
     .withMessage('Please enter a password'),
-], (req, res) => {
+], async function (req, res) {
   const errors = validationResult(req)
 
   if (errors.isEmpty()) {
     res.send('Thank you for your registration!')
-    dbFunctions.addUser(req.email, req.password)
+    console.log(body('email'))
+    const userId = database.dbInterface.addUser(req.email, req.password)
+    console.log(userId)
   } else {
     res.render('register', {
       title: 'Registration form',

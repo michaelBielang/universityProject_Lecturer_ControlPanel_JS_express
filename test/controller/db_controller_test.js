@@ -39,7 +39,7 @@ async function generateQuestionId (db) {
 describe('test add user db', function () {
   const db = require('../../src/controller/db_controller')
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     await new Promise(resolve => setTimeout(resolve, 250))
   })
   it('should work', async function () {
@@ -56,7 +56,7 @@ describe('test add user db', function () {
 
 describe('test get user db', function () {
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e').then(() => {
       return Promise.resolve()
     })
@@ -76,7 +76,7 @@ describe('test get user db', function () {
 
 describe('test delete user db', function () {
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e').then(() => {
       return Promise.resolve()
     })
@@ -98,7 +98,7 @@ describe('test add subject to db', function () {
   const db = require('../../src/controller/db_controller')
   let userId
   before(async () => {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
   })
   it('should work', async function () {
@@ -138,7 +138,7 @@ describe('test get subject from db', function () {
   const db = require('../../src/controller/db_controller')
   let subjectId
   before(async function () {
-    await await db.dbInterface.setupAssociations()
+    await await db.dbInterface.initDb()
     const userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
     await db.dbInterface.addSubject('subjectTest', userId).then(objId => {
       subjectId = objId
@@ -162,7 +162,7 @@ describe('test delete subject from db', function () {
   let subjectId
   let userId
   before(async function () {
-    await await db.dbInterface.setupAssociations()
+    await await db.dbInterface.initDb()
     userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
     subjectId = await db.dbInterface.addSubject('deleteSubjectTest', userId)
   })
@@ -185,7 +185,7 @@ describe('test update subject in db', function () {
   let subjectId
   let userId
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
     subjectId = await db.dbInterface.addSubject('updateSubject', userId)
   })
@@ -207,7 +207,7 @@ describe('test add topic to db', function () {
   const db = require('../../src/controller/db_controller')
   let subjectId
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     subjectId = await generateSubjectId(db)
   })
   it('should work', async function () {
@@ -226,7 +226,7 @@ describe('test get topics from db', function () {
   const db = require('../../src/controller/db_controller')
   let subjectId
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     subjectId = await generateSubjectId(db)
     await db.dbInterface.addTopic('topicTest', subjectId).then(() => {
       return Promise.resolve()
@@ -248,7 +248,7 @@ describe('test get topic from db', function () {
   const db = require('../../src/controller/db_controller')
   let id
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     const subjectId = await generateSubjectId(db)
     await db.dbInterface.addTopic('topicTest', subjectId).then(objId => {
       id = objId
@@ -272,7 +272,7 @@ describe('test delete topic from db', function () {
   let topicID
   let subjectId
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     subjectId = await generateSubjectId(db)
     topicID = await db.dbInterface.addTopic('deleteTopicTest2', subjectId)
   })
@@ -294,7 +294,7 @@ describe('test update topic in db', function () {
   const db = require('../../src/controller/db_controller')
   let topicID
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     const subjectId = await generateSubjectId(db)
     await db.dbInterface.addTopic('updateTopic', subjectId).then((result) => {
       topicID = result
@@ -319,7 +319,7 @@ describe('test add question to db', function () {
   const db = require('../../src/controller/db_controller')
   let topicId
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     topicId = await generateTopicId(db)
   })
   it('should work', async function () {
@@ -338,7 +338,7 @@ describe('test get questions from db', function () {
   const db = require('../../src/controller/db_controller')
   let topicId
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     topicId = await generateTopicId(db)
     await db.dbInterface.addQuestion('questionTest', topicId)
   })
@@ -358,7 +358,7 @@ describe('test get question from db', function () {
   const db = require('../../src/controller/db_controller')
   let id
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     const topicId = await generateTopicId(db)
     await db.dbInterface.addQuestion('questionsTest', topicId).then(objId => {
       id = objId
@@ -382,7 +382,7 @@ describe('test delete question from db', function () {
   let questionId
   let topicId
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     topicId = await generateTopicId(db)
     questionId = await db.dbInterface.addQuestion('deleteQuestion', topicId)
   })
@@ -404,7 +404,7 @@ describe('test update question in db', function () {
   const db = require('../../src/controller/db_controller')
   let topicID
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     const topicId = await generateTopicId(db)
     await db.dbInterface.addQuestion('updateQuestion', topicId).then((result) => {
       topicID = result
@@ -428,7 +428,7 @@ describe('test update question in db', function () {
 describe('test add answer to db', function () {
   const db = require('../../src/controller/db_controller')
   it('should work', async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     const questionId = await generateQuestionId(db)
     await db.dbInterface.addAnswer('answerTest', false, questionId).then((result) => {
       expect(isNaN(result)).equal(false)
@@ -445,7 +445,7 @@ describe('test get answers from db', function () {
   const db = require('../../src/controller/db_controller')
   let questionId
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     questionId = await generateQuestionId(db)
     await db.dbInterface.addAnswer('answersTest', false, questionId).then(() => {
       return Promise.resolve()
@@ -467,7 +467,7 @@ describe('test get answer from db', function () {
   const db = require('../../src/controller/db_controller')
   let id
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     const questionId = await generateQuestionId(db)
     await db.dbInterface.addAnswer('answerTest', false, questionId).then(objId => {
       id = objId
@@ -491,7 +491,7 @@ describe('test delete answers from db', function () {
   let answerId
   let questionId
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     questionId = await generateQuestionId(db)
     answerId = await db.dbInterface.addAnswer('deleteAnswer', false, questionId)
   })
@@ -513,7 +513,7 @@ describe('test update answer in db', function () {
   const db = require('../../src/controller/db_controller')
   let topicID
   before(async function () {
-    await db.dbInterface.setupAssociations()
+    await db.dbInterface.initDb()
     const questionId = await generateQuestionId(db)
     await db.dbInterface.addAnswer('updateAnswer', false, questionId).then((result) => {
       topicID = result

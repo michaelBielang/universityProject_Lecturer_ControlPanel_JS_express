@@ -41,7 +41,7 @@ exports.dbInterface = {
   deleteAnswer: deleteAnswer,
   getAnswer: getAnswer,
   getAnswers: getAnswers,
-  setupAssociations: setupAssociations
+  initDb: initDb
 }
 
 /**
@@ -98,6 +98,9 @@ function addUser (firstName, lastName, email, title, password_encrypted) {
     title: title,
     password: password_encrypted
   }).then(userObj => {
+    console.log(userObj)
+    console.log(userObj.id)
+    console.log('return')
     return userObj.id
   }, () => {
     return false
@@ -467,7 +470,7 @@ function getAnswers (questionId) {
  *
  * @returns {Promise<void>}
  */
-async function setupAssociations () {
+async function initDb () {
 
   // user + subject
   userModel.hasMany(subjectModel)
