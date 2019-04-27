@@ -14,9 +14,20 @@ block content
                     h1 Register
                     form(method='POST' action='/register')
                         div.form-group
+                            form-control(type='text' id='title' value=data.title required)
+                            select.custom-select(name='title' )
+                                each val in ['-' , 'Dr.' , 'Prof.']
+                                    option=val
+                        div.form-group
+                            label(for='firstName') Vorname
+                            input.form-control(type='text' id='firstName' placeholder='Vorname' name='firstName' value=data.firstName required)
+                        div.form-group
+                            label(for='lastName') Nachname
+                            input.form-control(type='text' id='lastName' placeholder='Nachname' name='lastName' value=data.lastName required)
+                        div.form-group
                             label(for='email') Email
-                            input.form-control(type='text' id='email' placeholder='email' name='email' value=data.email)
+                            input.form-control(type='email' id='email' placeholder='E-Mail' name='email' value=data.email required)
                         div.form-group
                             label(for='password') Password
-                            input.form-control(type='password' id='password' placeholder='password' name='password' value=data.password)
-                        button.btn.btn-primary(type='submit') Register
+                            input.form-control(type='password' id='password' placeholder='Password' name='password' value=data.password required title="Mindestlänge 5 Zeichen", pattern=".{5,30}")
+                        button.btn.btn-outline-info(type='submit') Register

@@ -6,7 +6,6 @@
  * Project:
  * java version "10.0.1"
  */
-
 const userModel = require('../model/user')
 const topicModel = require('../model/topic')
 const subjectModel = require('../model/subject')
@@ -98,9 +97,6 @@ function addUser (firstName, lastName, email, title, password_encrypted) {
     title: title,
     password: password_encrypted
   }).then(userObj => {
-    console.log(userObj)
-    console.log(userObj.id)
-    console.log('return')
     return userObj.id
   }, () => {
     return false

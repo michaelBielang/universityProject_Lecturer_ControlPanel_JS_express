@@ -16,24 +16,29 @@ const router = express.Router()
 /* GET home page. */
 router.get('/', async function (req, res) {
   await database.dbInterface.initDb()
+  await database.dbInterface.dropDb()
   res.render('register', {title: 'Register'})
 })
 
 router.post('/', [
   body('email')
-    .isLength({min: 1})
+    .isEmail()
     .withMessage('Please enter an email'),
   body('password')
-    .isLength({min: 1})
+    .isLength({min: 7})
     .withMessage('Please enter a password'),
 ], async function (req, res) {
   const errors = validationResult(req)
-
   if (errors.isEmpty()) {
     res.send('Thank you for your registration!')
-    console.log(body('email'))
-    const userId = database.dbInterface.addUser(req.email, req.password)
-    console.log(userId)
+
+    //could be further implemented but so far not wanted by Prof. Metzner
+    //if it will be continued you need to implement a hash function here for the password before storing it!
+
+    /*
+    const hashedPw = hashPassword(req.body.password)
+    const userId = await database.dbInterface.addUser(req.body.firstName, req.body.lastName, req.body.email, req.body.title, hashedPw)
+        */
   } else {
     res.render('register', {
       title: 'Registration form',
