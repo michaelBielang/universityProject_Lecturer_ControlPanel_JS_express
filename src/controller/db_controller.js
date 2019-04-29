@@ -129,10 +129,16 @@ function getUser (email) {
  * @param email
  */
 function deleteUser (email) {
-  userModel.destroy({
-    where: {
-      email: email
-    }
+  return new Promise((resolve, reject) => {
+    userModel.destroy({
+      where: {
+        email: email
+      }
+    }).then(answerObj => {
+      resolve(answerObj)
+    }, () => {
+      reject(false)
+    })
   })
 }
 
@@ -171,13 +177,20 @@ function updateTopic (newTopicName, topicId) {
 
 /**
  *
- * @param id
+ * @param topicId
+ * @return {Promise<any>}
  */
-function deleteTopic (id) {
-  topicModel.destroy({
-    where: {
-      id: id
-    }
+function deleteTopic (topicId) {
+  return new Promise((resolve, reject) => {
+    topicModel.destroy({
+      where: {
+        id: topicId
+      }
+    }).then(answerObj => {
+      resolve(answerObj)
+    }, () => {
+      reject(false)
+    })
   })
 }
 
@@ -254,12 +267,19 @@ function updateSubject (subjectName, subjectId) {
 /**
  *
  * @param subjectId
+ * @return {Promise<any>}
  */
 function deleteSubject (subjectId) {
-  subjectModel.destroy({
-    where: {
-      id: subjectId
-    }
+  return new Promise((resolve, reject) => {
+    subjectModel.destroy({
+      where: {
+        id: subjectId
+      }
+    }).then(answerObj => {
+      resolve(answerObj)
+    }, () => {
+      reject(false)
+    })
   })
 }
 
@@ -334,12 +354,19 @@ function updateQuestion (newQuestion, questionId) {
 /**
  *
  * @param questionId
+ * @return {Promise<any>}
  */
 function deleteQuestion (questionId) {
-  questionModel.destroy({
-    where: {
-      id: questionId
-    }
+  return new Promise((resolve, reject) => {
+    questionModel.destroy({
+      where: {
+        id: questionId
+      }
+    }).then(answerObj => {
+      resolve(answerObj)
+    }, () => {
+      reject(false)
+    })
   })
 }
 
@@ -418,12 +445,19 @@ function updateAnswer (newAnswer, answerId) {
 /**
  *
  * @param answerId
+ * @returns {Promise<any>}
  */
 function deleteAnswer (answerId) {
-  answerModel.destroy({
-    where: {
-      id: answerId
-    }
+  return new Promise((resolve, reject) => {
+    answerModel.destroy({
+      where: {
+        id: answerId
+      }
+    }).then(answerObj => {
+      resolve(answerObj)
+    }, () => {
+      reject(false)
+    })
   })
 }
 
