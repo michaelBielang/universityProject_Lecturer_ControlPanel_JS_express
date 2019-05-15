@@ -7,9 +7,6 @@
  * java version "10.0.1"
  */
 
-// TODO
-// make script running "db-test": "mocha src/controller/db_controller_test.js"
-// make script "db-test": "mocha src/controller/db_controller_test.js" creating a sqlite db if not present
 'use strict'
 /* eslint-env node, mocha */
 let mocha = require('mocha')
@@ -31,8 +28,13 @@ async function generateTopicId (db) {
   return await db.dbInterface.addTopic('test', subjectId)
 }
 
-async function generateQuestionId (db) {
+async function generateSetId (db) {
   const topicId = await generateTopicId(db)
+  return await db.dbInterface.addSet('test', topicId)
+}
+
+async function generateQuestionId (db) {
+  const topicId = await generateSetId(db)
   return await db.dbInterface.addQuestion('test', topicId)
 }
 
@@ -140,10 +142,7 @@ describe('test get subject from db', function () {
   before(async function () {
     await await db.dbInterface.initDb()
     const userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
-    await db.dbInterface.addSubject('subjectTest', userId).then(objId => {
-      subjectId = objId
-      return Promise.resolve()
-    })
+    subjectId = await db.dbInterface.addSubject('subjectTest', userId)
   })
   it('should work', async function () {
     await db.dbInterface.getSubject(subjectId).then((result) => {
@@ -193,6 +192,112 @@ describe('test update subject in db', function () {
     await db.dbInterface.updateSubject('success', subjectId)
     await new Promise(resolve => setTimeout(resolve, 250))
     await db.dbInterface.getSubject(subjectId).then((result) => {
+      expect(JSON.stringify(result).includes('success')).equal(true)
+      return Promise.resolve()
+    })
+  })
+  after(async () => {
+      await db.dbInterface.dropDb()
+    }
+  )
+})
+
+describe('test add set to db', function () {
+  const db = require('../../src/controller/db_controller')
+  let topicId
+  before(async () => {
+    await db.dbInterface.initDb()
+    topicId = await generateTopicId(db)
+  })
+  it('test add set to db should work', async function () {
+    await db.dbInterface.addSet('setTest', topicId).then((result) => {
+      expect(isNaN(result)).equal(false)
+      return Promise.resolve()
+    })
+  })
+  after(async () => {
+      await db.dbInterface.dropDb()
+    }
+  )
+})
+
+describe('test get sets from db', function () {
+  const db = require('../../src/controller/db_controller')
+  let topicId
+  before(async function () {
+    await db.dbInterface.initDb()
+    topicId = await generateTopicId(db)
+    await db.dbInterface.addSet('setTest', topicId).then(() => {
+      return Promise.resolve()
+    })
+  })
+  it('test get sets from db should work', async function () {
+    await db.dbInterface.getSets(topicId).then((result) => {
+      expect(JSON.stringify(result).includes('setTest')).equal(true)
+      return Promise.resolve()
+    })
+  })
+  after(async () => {
+      await db.dbInterface.dropDb()
+    }
+  )
+})
+describe('test get set from db', function () {
+  const db = require('../../src/controller/db_controller')
+  let topicId
+  let setId
+  before(async function () {
+    await await db.dbInterface.initDb()
+    topicId = await generateTopicId(db)
+    setId = await db.dbInterface.addSet('setTest', topicId)
+  })
+  it('should work', async function () {
+    await db.dbInterface.getSet(setId).then((result) => {
+      expect(JSON.stringify(result).includes('setTest')).equal(true)
+      return Promise.resolve()
+    })
+  })
+  after(async () => {
+      await db.dbInterface.dropDb()
+    }
+  )
+})
+describe('test delete set from db', function () {
+  const db = require('../../src/controller/db_controller')
+  let topicId
+  let setId
+  before(async function () {
+    await await db.dbInterface.initDb()
+    topicId = await generateTopicId(db)
+    setId = await db.dbInterface.addSet('deleteSetTest', topicId)
+  })
+  it('should work', async function () {
+    db.dbInterface.deleteSubject(setId)
+    await new Promise(resolve => setTimeout(resolve, 250))
+    await db.dbInterface.getSets(setId).then((result) => {
+      expect(JSON.stringify(result).includes('deleteSubjectTest')).equal(false)
+      return Promise.resolve()
+    })
+  })
+  after(async () => {
+      await db.dbInterface.dropDb()
+    }
+  )
+})
+
+describe('test update set in db', function () {
+  const db = require('../../src/controller/db_controller')
+  let topicId
+  let setId
+  before(async function () {
+    await db.dbInterface.initDb()
+    topicId = await generateTopicId(db)
+    setId = await db.dbInterface.addSet('updateSet', topicId)
+  })
+  it('should work', async function () {
+    await db.dbInterface.updateSet('success', setId)
+    await new Promise(resolve => setTimeout(resolve, 250))
+    await db.dbInterface.getSet(setId).then((result) => {
       expect(JSON.stringify(result).includes('success')).equal(true)
       return Promise.resolve()
     })
@@ -317,13 +422,13 @@ describe('test update topic in db', function () {
 
 describe('test add question to db', function () {
   const db = require('../../src/controller/db_controller')
-  let topicId
+  let setId
   before(async function () {
     await db.dbInterface.initDb()
-    topicId = await generateTopicId(db)
+    setId = await generateSetId(db)
   })
   it('should work', async function () {
-    await db.dbInterface.addQuestion('questionTest', topicId).then((result) => {
+    await db.dbInterface.addQuestion('questionTest', setId).then((result) => {
       expect(isNaN(result)).equal(false)
       return Promise.resolve()
     })
@@ -336,14 +441,14 @@ describe('test add question to db', function () {
 
 describe('test get questions from db', function () {
   const db = require('../../src/controller/db_controller')
-  let topicId
+  let setId
   before(async function () {
     await db.dbInterface.initDb()
-    topicId = await generateTopicId(db)
-    await db.dbInterface.addQuestion('questionTest', topicId)
+    setId = await generateSetId(db)
+    await db.dbInterface.addQuestion('questionTest', setId)
   })
   it('should work', async function () {
-    await db.dbInterface.getQuestions(topicId).then((result) => {
+    await db.dbInterface.getQuestions(setId).then((result) => {
       expect(JSON.stringify(result).includes('questionTest')).equal(true)
       return Promise.resolve()
     })
@@ -359,8 +464,8 @@ describe('test get question from db', function () {
   let id
   before(async function () {
     await db.dbInterface.initDb()
-    const topicId = await generateTopicId(db)
-    await db.dbInterface.addQuestion('questionsTest', topicId).then(objId => {
+    let setId = await generateSetId(db)
+    await db.dbInterface.addQuestion('questionsTest', setId).then(objId => {
       id = objId
       return Promise.resolve()
     })
@@ -380,16 +485,16 @@ describe('test get question from db', function () {
 describe('test delete question from db', function () {
   const db = require('../../src/controller/db_controller')
   let questionId
-  let topicId
+  let setId
   before(async function () {
     await db.dbInterface.initDb()
-    topicId = await generateTopicId(db)
-    questionId = await db.dbInterface.addQuestion('deleteQuestion', topicId)
+    setId = await generateSetId(db)
+    questionId = await db.dbInterface.addQuestion('deleteQuestion', setId)
   })
   it('should work', async function () {
     db.dbInterface.deleteQuestion(questionId)
     await new Promise(resolve => setTimeout(resolve, 250))
-    await db.dbInterface.getQuestions(topicId).then((result) => {
+    await db.dbInterface.getQuestions(setId).then((result) => {
       expect(JSON.stringify(result).includes('deleteQuestion')).equal(false)
       return Promise.resolve()
     })
@@ -402,19 +507,19 @@ describe('test delete question from db', function () {
 
 describe('test update question in db', function () {
   const db = require('../../src/controller/db_controller')
-  let topicID
+  let setId
   before(async function () {
     await db.dbInterface.initDb()
-    const topicId = await generateTopicId(db)
-    await db.dbInterface.addQuestion('updateQuestion', topicId).then((result) => {
-      topicID = result
+    setId = await generateSetId(db)
+    await db.dbInterface.addQuestion('updateQuestion', setId).then((result) => {
+      setId = result
       return Promise.resolve()
     })
   })
   it('should work', async function () {
-    db.dbInterface.updateQuestion('success', topicID)
+    db.dbInterface.updateQuestion('success', setId)
     await new Promise(resolve => setTimeout(resolve, 250))
-    await db.dbInterface.getQuestion(topicID).then((result) => {
+    await db.dbInterface.getQuestion(setId).then((result) => {
       expect(JSON.stringify(result).includes('success')).equal(true)
       return Promise.resolve()
     })

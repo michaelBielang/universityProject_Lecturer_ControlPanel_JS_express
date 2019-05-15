@@ -11,6 +11,7 @@ const topicModel = require('../model/topic')
 const subjectModel = require('../model/subject')
 const questionModel = require('../model/question')
 const answerModel = require('../model/answer')
+const setModel = require('../model/set')
 const database = require('../db/database').sequeliceInstance
 
 exports.dbInterface = {
@@ -30,6 +31,11 @@ exports.dbInterface = {
   deleteSubject: deleteSubject,
   getSubjects: getSubjects,
   getSubject: getSubject,
+  addSet: addSet,
+  updateSet: updateSet,
+  deleteSet: deleteSet,
+  getSet: getSet,
+  getSets: getSets,
   addQuestion: addQuestion,
   updateQuestion: updateQuestion,
   deleteQuestion: deleteQuestion,
@@ -217,6 +223,91 @@ function getTopics (subjectId) {
 }
 
 /**
+ * add a new set
+ *
+ * @param setName
+ * @param topicId
+ * @returns {Promise<number | boolean>}
+ */
+function addSet (setName, topicId) {
+  return setModel.create({
+    setName,
+    topicId
+  }).then(result => {
+    return result.id
+  }, () => {
+    return false
+  })
+}
+
+/**
+ * Updates an existing set
+ * @param setName
+ * @param setId
+ * @returns {Promise<true | false>}
+ */
+function updateSet (setName, setId) {
+  return new Promise((resolve, reject) => {
+    setModel.update({
+      setName: setName
+    }, {where: {id: setId}})
+      .then(() => resolve(true))
+      .catch(() => reject(false))
+  })
+}
+
+/**
+ * Deletes a set
+ * @param setId
+ */
+function deleteSet (setId) {
+  setModel.destroy({
+    where: {
+      id: setId
+    }
+  })
+}
+
+/**
+ * returns a particular set
+ * @param setId
+ * @returns {Promise<any>}
+ */
+function getSet (setId) {
+  return new Promise((resolve, reject) => {
+    setModel.findAll({
+      where: {
+        id: setId
+      }
+    }).then(topicObj => {
+      resolve(topicObj)
+    }, () => {
+      reject(false)
+    })
+  })
+}
+
+/**
+ * Returns a set of a certain topic
+ * @param topicId
+ * @returns {Promise<any>}
+ */
+function getSets (topicId) {
+  return new Promise((resolve, reject) => {
+    setModel.findAll({
+      where: {
+        topicId: topicId
+      }
+    }).then(results => {
+      resolve(results)
+    }, (err) => {
+      console.log(err)
+      reject(false)
+    })
+  })
+}
+
+/**
  * Returns id or false if fails
  * @param subjectName
  * @param userId
@@ -299,13 +390,13 @@ function getSubjects (userId) {
 /**
  *
  * @param question
- * @param topicId
+ * @param setId
  * @returns {PromiseLike<T | boolean> | Promise<T | boolean>}
  */
-function addQuestion (question, topicId) {
+function addQuestion (question, setId) {
   return questionModel.create({
     question: question,
-    topicId: topicId
+    setId: setId
   }).then(result => {
     return result.id
   }, () => {
@@ -364,11 +455,11 @@ function getQuestion (questionId) {
  *
  * @returns {Promise<any>}
  */
-function getQuestions (topicId) {
+function getQuestions (setId) {
   return new Promise((resolve, reject) => {
     questionModel.findAll({
       where: {
-        topicId: topicId
+        setId: setId
       }
     }).then(results => {
       resolve(results)
@@ -468,21 +559,26 @@ function getAnswers (questionId) {
  */
 async function initDb () {
 
-  // user + subject
+  // user has subjects
   userModel.hasMany(subjectModel)
   subjectModel.belongsTo(userModel)
 
-  // subject and topic
+  // subject has topics
   subjectModel.hasMany(topicModel)
   topicModel.belongsTo(subjectModel)
 
-  // topic and question
-  topicModel.hasMany(questionModel)
-  questionModel.belongsTo(topicModel)
+  // topic has sets
+  topicModel.hasMany(setModel)
+  setModel.belongsTo(topicModel)
+
+  // set has questions
+  setModel.hasMany(questionModel)
+  questionModel.belongsTo(setModel)
 
   // question and answer
   questionModel.hasMany(answerModel)
   answerModel.belongsTo(questionModel)
+
   await database.sync()
   return Promise.resolve()
 }
