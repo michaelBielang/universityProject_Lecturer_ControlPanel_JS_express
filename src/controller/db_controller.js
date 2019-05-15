@@ -84,7 +84,8 @@ function dropDb () {
     userModel.destroy({truncate: true}),
     subjectModel.destroy({truncate: true}),
     questionModel.destroy({truncate: true}),
-    answerModel.destroy({truncate: true})])
+    answerModel.destroy({truncate: true}),
+    setModel.destroy({truncate: true})])
 }
 
 /**
@@ -436,7 +437,11 @@ function updateQuestion (newQuestion, questionId) {
   return new Promise((resolve, reject) => {
     questionModel.update({
       question: newQuestion
-    }, {where: {id: questionId}})
+    }, {
+      where: {
+        id: questionId
+      }
+    })
       .then(() => resolve())
       .catch(() => reject(false))
   })
