@@ -95,7 +95,7 @@ router.get('/', async (req, res) => {
   res.render('login', {Msg: 'Welcome'})
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
 
   const password = req.body.password
   const rzId = req.body.rzLogin
@@ -113,13 +113,13 @@ router.post('/', async (req, res) => {
 
         return database.dbInterface.addUser('', '', '', '', '', rzId)
       })
-  }).catch(err => {
+  }).then(() => {
+    res.redirect('/home')
+  }).catch(() => {
       //TODO handle error case with view
-      console.log('error: ' + err)
+      res.render('login', {Msg: 'Welcome'})
     }
   )
-
-  res.render('login', {Msg: 'Welcome'})
 })
 
 module.exports = router
