@@ -14,7 +14,7 @@ const describe = mocha.describe
 const expect = require('chai').expect
 
 async function generateUserId (db) {
-  return await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
+  return await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e', 'f')
 }
 
 async function generateSubjectId (db) {
@@ -23,7 +23,7 @@ async function generateSubjectId (db) {
 }
 
 async function generateTopicId (db) {
-  const userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
+  const userId = await generateUserId(db)
   const subjectId = await db.dbInterface.addSubject('test', userId)
   return await db.dbInterface.addTopic('test', subjectId)
 }
@@ -45,7 +45,7 @@ describe('test add user db', function () {
     await new Promise(resolve => setTimeout(resolve, 250))
   })
   it('should work', async function () {
-    await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e').then((result) => {
+    await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e', 'f').then((result) => {
       expect(isNaN(result)).equal(false)
       return Promise.resolve()
     })
@@ -59,13 +59,13 @@ describe('test add user db', function () {
 describe('test get user db', function () {
   before(async function () {
     await db.dbInterface.initDb()
-    await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e').then(() => {
+    await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e', 'f').then(() => {
       return Promise.resolve()
     })
   })
   const db = require('../../src/controller/db_controller')
   it('should work', async function () {
-    await db.dbInterface.getUser('c').then((result) => {
+    await db.dbInterface.getUser('f').then((result) => {
       expect(isNaN(result.id)).equal(false)
       return Promise.resolve()
     })
@@ -79,13 +79,13 @@ describe('test get user db', function () {
 describe('test delete user db', function () {
   before(async function () {
     await db.dbInterface.initDb()
-    await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e').then(() => {
+    await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e', 'f').then(() => {
       return Promise.resolve()
     })
   })
   const db = require('../../src/controller/db_controller')
   it('should work', async function () {
-    await db.dbInterface.getUser('c').then((result) => {
+    await db.dbInterface.getUser('f').then((result) => {
       expect(isNaN(result.id)).equal(false)
       return Promise.resolve()
     })
@@ -101,7 +101,7 @@ describe('test add subject to db', function () {
   let userId
   before(async () => {
     await db.dbInterface.initDb()
-    userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
+    userId = await generateUserId(db)
   })
   it('should work', async function () {
     await db.dbInterface.addSubject('subjectTest', userId).then((result) => {
@@ -119,7 +119,7 @@ describe('test get subjects from db', function () {
   const db = require('../../src/controller/db_controller')
   let userId
   before(async function () {
-    userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
+    userId = await generateUserId(db)
     await db.dbInterface.addSubject('subjectTest', userId).then(() => {
       return Promise.resolve()
     })
@@ -141,7 +141,7 @@ describe('test get subject from db', function () {
   let subjectId
   before(async function () {
     await await db.dbInterface.initDb()
-    const userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
+    let userId = await generateUserId(db)
     subjectId = await db.dbInterface.addSubject('subjectTest', userId)
   })
   it('should work', async function () {
@@ -162,7 +162,7 @@ describe('test delete subject from db', function () {
   let userId
   before(async function () {
     await await db.dbInterface.initDb()
-    userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
+    userId = await generateUserId(db)
     subjectId = await db.dbInterface.addSubject('deleteSubjectTest', userId)
   })
   it('should work', async function () {
@@ -185,7 +185,7 @@ describe('test update subject in db', function () {
   let userId
   before(async function () {
     await db.dbInterface.initDb()
-    userId = await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e')
+    userId = await generateUserId(db)
     subjectId = await db.dbInterface.addSubject('updateSubject', userId)
   })
   it('should work', async function () {

@@ -97,14 +97,15 @@ function dropDb () {
  * @param password_encrypted
  * @returns {Promise<number> | Promise<boolean>}
  */
-function addUser (firstName, lastName, email, title, password_encrypted) {
+function addUser (firstName, lastName, email, title, password_encrypted, rzId) {
   // Create a new user
   return userModel.create({
     firstName: firstName,
     lastName: lastName,
     email: email,
     title: title,
-    password: password_encrypted
+    password: password_encrypted,
+    rzId
   }).then(userObj => {
     return userObj.id
   }, () => {
@@ -114,17 +115,21 @@ function addUser (firstName, lastName, email, title, password_encrypted) {
 
 /**
  * returns user id or false in error case
- * @param email
+ * @param rzId
  * @returns {Promise<number> | Promise<boolean>}
  */
-function getUser (email) {
+function getUser (rzId) {
   return new Promise((resolve, reject) => {
     userModel.findAll({
       where: {
-        email: email
+        rzId: rzId
       }
     }).then(result => {
-      resolve(result[0].dataValues)
+      if (result.length > 0) {
+        resolve(result[0].dataValues)
+      } else {
+        reject()
+      }
     }, () => {
       reject(false)
     })
@@ -133,13 +138,13 @@ function getUser (email) {
 
 /**
  *
- * @param email
+ * @param rzId
  */
-function deleteUser (email) {
+function deleteUser (rzId) {
   return new Promise((resolve, reject) => {
     userModel.destroy({
       where: {
-        email: email
+        rzId: rzId
       }
     }).then(answerObj => {
       resolve(answerObj)

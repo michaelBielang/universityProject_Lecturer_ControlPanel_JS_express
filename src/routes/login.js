@@ -77,7 +77,7 @@ function auth (client, user, pass) {
         } else {
           resolve({
             message: 'Authenticated',
-            userid: user
+            userId: user
           })
         }
       })
@@ -91,6 +91,7 @@ function auth (client, user, pass) {
 }
 
 router.get('/', async (req, res) => {
+  await database.dbInterface.initDb()
   res.render('login', {Msg: 'Welcome'})
 })
 
@@ -98,14 +99,28 @@ router.post('/', async (req, res) => {
 
   const password = req.body.password
   const rzId = req.body.rzLogin
-
   await getLdapClient().then(resolve => {
     return auth(resolve, rzId, password)
-  }).then(userId => {
-    // example: nrg
-  }).catch(err => console.log(err))
+  }).then(() => {
+    return database.dbInterface.getUser(rzId)
+      .then(() => {
+        //case user is present
+
+        this.userId = rzId
+        return Promise.resolve()
+      }, () => {
+        //case user is not present
+
+        return database.dbInterface.addUser('', '', '', '', '', rzId)
+      })
+  }).catch(err => {
+      //TODO handle error case with view
+      console.log('error: ' + err)
+    }
+  )
 
   res.render('login', {Msg: 'Welcome'})
 })
 
 module.exports = router
+exports.userId = ''
