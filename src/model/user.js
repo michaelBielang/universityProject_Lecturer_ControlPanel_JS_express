@@ -13,6 +13,10 @@ db.sync()
 
 const user = db.define('user', {
   // attributes
+  rzId: {
+    type: Sequelize.TEXT,
+    primaryKey: true
+  },
   firstName: {
     type: Sequelize.STRING,
     allowNull: true
@@ -32,10 +36,6 @@ const user = db.define('user', {
   password: {
     type: Sequelize.TEXT,
     allowNull: true
-  },
-  rzId: {
-    type: Sequelize.TEXT,
-    allowNull: false
   }
 })
 

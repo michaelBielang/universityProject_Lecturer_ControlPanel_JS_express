@@ -6,6 +6,32 @@ html
         script (src = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js")
         script (src = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js")
         link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
-        link(rel='stylesheet', href='/stylesheets/style.css')
+
+
+    script
+        block script
+
     body
-        block content
+        style
+            include css/background.css
+        .wrapper
+            nav.navbar.navbar-expand-md.navbar-light
+                .navbar-collapse.collapse.w-100.order-1.order-md-0.dual-collapse2
+                    ul.navbar-nav.mr-auto
+                        li.nav-item.active
+                            a.nav-link(href='/') Home
+                        li.nav-item.active
+                            a.nav-link(href='/subjects') Fächer
+                .mx-auto.order-0
+                    a.navbar-brand.mx-auto.logo(href='#') Campus Arcade CP
+                    button.navbar-toggler(type='button', data-toggle='collapse', data-target='.dual-collapse2')
+                        span.navbar-toggler-icon
+                .navbar-collapse.collapse.w-100.order-3.dual-collapse2
+                    ul.navbar-nav.ml-auto
+                        li.nav-item
+                            a.nav-link(href='/cc') CC
+                        li.nav-item
+                            a.nav-link(href='/logout') Logout
+            block content
+
+

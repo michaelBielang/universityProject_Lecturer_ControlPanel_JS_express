@@ -10,6 +10,33 @@ const express = require('express')
 const database = require('../controller/db_controller')
 const ldapjs = require('ldapjs')
 const router = express.Router()
+let userId = 'asd'
+
+async function generateUserId (db) {
+  return await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e', 'nrg')
+}
+
+async function generateSubjectId (db) {
+  const userId = await generateUserId(db)
+  console.log('userid: ' + userId)
+  return await db.dbInterface.addSubject('test', 'nrg')
+}
+
+async function generateTopicId (db) {
+  const subjectId = await generateSubjectId(db)
+  console.log('subjectID: ' + subjectId)
+  return await db.dbInterface.addTopic('test', subjectId)
+}
+
+async function generateSetId (db) {
+  const topicId = await generateTopicId(db)
+  return await db.dbInterface.addSet('test', topicId)
+}
+
+async function generateQuestionId (db) {
+  const topicId = await generateSetId(db)
+  return await db.dbInterface.addQuestion('test', topicId)
+}
 
 function ldapOptions (url) {
   return {
@@ -99,7 +126,31 @@ router.post('/', async (req, res, next) => {
 
   const password = req.body.password
   const rzId = req.body.rzLogin
-  await getLdapClient().then(resolve => {
+  userId = rzId
+  // TODO for testing
+  await database.dbInterface.getUser(rzId)
+    .then(() => {
+      //case user is present
+      console.log('1')
+      return Promise.resolve()
+    }, async () => {
+      //case user is not present
+      console.log('2')
+      return await generateQuestionId(database) // todo remove for production
+      //todo activate for production
+      // return database.dbInterface.addUser('', '', '', '', '', rzId)
+    }).then(() => {
+      console.log('3')
+      res.redirect('/home')
+    }).catch(() => {
+        //TODO handle error case with view
+        console.log('4')
+        res.render('login', {Msg: 'Welcome'})
+      }
+    )
+
+  // TODO for production
+  /*await getLdapClient().then(resolve => {
     return auth(resolve, rzId, password)
   }).then(() => {
     return database.dbInterface.getUser(rzId)
@@ -119,8 +170,10 @@ router.post('/', async (req, res, next) => {
       //TODO handle error case with view
       res.render('login', {Msg: 'Welcome'})
     }
-  )
+  )*/
 })
 
 module.exports = router
-exports.userId = ''
+module.exports.myTest = function () {
+  return userId
+}

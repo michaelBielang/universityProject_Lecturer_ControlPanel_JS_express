@@ -9,10 +9,10 @@
 const express = require('express')
 const database = require('../controller/db_controller')
 const router = express.Router()
+const user = require('./login')
 
 router.get('/', async (req, res) => {
   res.render('home', {Msg: 'Welcome'})
 })
 
 module.exports = router
-exports.userId = ''

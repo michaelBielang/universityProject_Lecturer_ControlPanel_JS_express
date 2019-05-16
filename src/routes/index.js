@@ -10,6 +10,6 @@ module.exports = (app) => {
   app.use('/answer', answerRouter)
   app.use('/topic', topicRouter)
   app.use('/subject', subjectRouter)
-  app.use('/login', loginController)
+  app.use('/', loginController)
   app.use('/home', homeController)
 }

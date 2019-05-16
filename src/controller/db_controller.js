@@ -95,28 +95,28 @@ function dropDb () {
  * @param email
  * @param title
  * @param password_encrypted
- * @returns {Promise<number> | Promise<boolean>}
+ * @returns {Promise<string> | Promise<boolean>}
  */
-function addUser (firstName, lastName, email, title, password_encrypted, rzId) {
+function addUser (rzId, firstName, lastName, email, title, password_encrypted) {
   // Create a new user
   return userModel.create({
+    rzId: rzId,
     firstName: firstName,
     lastName: lastName,
     email: email,
     title: title,
-    password: password_encrypted,
-    rzId
+    password: password_encrypted
   }).then(userObj => {
-    return userObj.id
+    return userObj.rzId
   }, () => {
     return false
   })
 }
 
 /**
- * returns user id or false in error case
+ * returns the user
  * @param rzId
- * @returns {Promise<number> | Promise<boolean>}
+ * @returns {Promise<user> | Promise<boolean>}
  */
 function getUser (rzId) {
   return new Promise((resolve, reject) => {
@@ -148,7 +148,7 @@ function deleteUser (rzId) {
       }
     }).then(answerObj => {
       resolve(answerObj)
-    }, () => {
+    }, (err) => {
       reject(false)
     })
   })
@@ -321,8 +321,7 @@ function getSets (topicId) {
       }
     }).then(results => {
       resolve(results)
-    }, (err) => {
-      console.log(err)
+    }, () => {
       reject(false)
     })
   })
@@ -331,13 +330,13 @@ function getSets (topicId) {
 /**
  * Returns id or false if fails
  * @param subjectName
- * @param userId
+ * @param rzId
  * @returns {PromiseLike<number> | Promise<boolean>}
  */
-function addSubject (subjectName, userId) {
+function addSubject (subjectName, rzId) {
   return subjectModel.create({
     subjectName: subjectName,
-    userId: userId
+    rzId: rzId
   }).then(result => {
     return result.id
   }, () => {
@@ -406,7 +405,7 @@ function getSubject (subjectId) {
 function getSubjects (userId) {
   return new Promise((resolve, reject) => {
     subjectModel.findAll({
-      where: {userId: userId}
+      where: {rzId: userId}
     }).then(results => {
       resolve(results)
     }, () => {
@@ -606,8 +605,7 @@ function getAnswers (questionId) {
 async function initDb () {
 
   // user has subjects
-  userModel.hasMany(subjectModel)
-  subjectModel.belongsTo(userModel)
+  subjectModel.belongsTo(userModel, {foreignKey: 'rzId'})
 
   // subject has topics
   subjectModel.hasMany(topicModel)

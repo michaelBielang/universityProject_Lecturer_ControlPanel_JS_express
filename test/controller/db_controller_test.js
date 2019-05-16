@@ -38,15 +38,16 @@ async function generateQuestionId (db) {
   return await db.dbInterface.addQuestion('test', topicId)
 }
 
+/*
 describe('test add user db', function () {
   const db = require('../../src/controller/db_controller')
   before(async function () {
     await db.dbInterface.initDb()
     await new Promise(resolve => setTimeout(resolve, 250))
   })
-  it('should work', async function () {
+  it('test add user db should work', async function () {
     await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e', 'f').then((result) => {
-      expect(isNaN(result)).equal(false)
+      expect(result).equal('a')
       return Promise.resolve()
     })
   })
@@ -65,8 +66,8 @@ describe('test get user db', function () {
   })
   const db = require('../../src/controller/db_controller')
   it('should work', async function () {
-    await db.dbInterface.getUser('f').then((result) => {
-      expect(isNaN(result.id)).equal(false)
+    await db.dbInterface.getUser('a').then((result) => {
+      expect(result.rzId).equal('a')
       return Promise.resolve()
     })
   })
@@ -85,8 +86,8 @@ describe('test delete user db', function () {
   })
   const db = require('../../src/controller/db_controller')
   it('should work', async function () {
-    await db.dbInterface.getUser('f').then((result) => {
-      expect(isNaN(result.id)).equal(false)
+    await db.dbInterface.deleteUser('a').then((result) => {
+      expect(result).equal(1)
       return Promise.resolve()
     })
   })
@@ -114,11 +115,13 @@ describe('test add subject to db', function () {
     }
   )
 })
+*/
 
 describe('test get subjects from db', function () {
   const db = require('../../src/controller/db_controller')
   let userId
   before(async function () {
+    await db.dbInterface.initDb()
     userId = await generateUserId(db)
     await db.dbInterface.addSubject('subjectTest', userId).then(() => {
       return Promise.resolve()
@@ -166,7 +169,7 @@ describe('test delete subject from db', function () {
     subjectId = await db.dbInterface.addSubject('deleteSubjectTest', userId)
   })
   it('should work', async function () {
-    db.dbInterface.deleteSubject(subjectId)
+    await db.dbInterface.deleteSubject(subjectId)
     await new Promise(resolve => setTimeout(resolve, 250))
     await db.dbInterface.getSubjects(userId).then((result) => {
       expect(JSON.stringify(result).includes('deleteSubjectTest')).equal(false)
@@ -272,7 +275,7 @@ describe('test delete set from db', function () {
     setId = await db.dbInterface.addSet('deleteSetTest', topicId)
   })
   it('should work', async function () {
-    db.dbInterface.deleteSubject(setId)
+    await db.dbInterface.deleteSet(setId)
     await new Promise(resolve => setTimeout(resolve, 250))
     await db.dbInterface.getSets(setId).then((result) => {
       expect(JSON.stringify(result).includes('deleteSubjectTest')).equal(false)
@@ -382,7 +385,7 @@ describe('test delete topic from db', function () {
     topicID = await db.dbInterface.addTopic('deleteTopicTest2', subjectId)
   })
   it('should work', async function () {
-    db.dbInterface.deleteTopic(topicID)
+    await db.dbInterface.deleteTopic(topicID)
     await new Promise(resolve => setTimeout(resolve, 250))
     await db.dbInterface.getTopics(subjectId).then((result) => {
       expect(JSON.stringify(result).includes('deleteTopicTest2')).equal(false)
@@ -492,7 +495,7 @@ describe('test delete question from db', function () {
     questionId = await db.dbInterface.addQuestion('deleteQuestion', setId)
   })
   it('should work', async function () {
-    db.dbInterface.deleteQuestion(questionId)
+    await db.dbInterface.deleteQuestion(questionId)
     await new Promise(resolve => setTimeout(resolve, 250))
     await db.dbInterface.getQuestions(setId).then((result) => {
       expect(JSON.stringify(result).includes('deleteQuestion')).equal(false)
@@ -601,7 +604,7 @@ describe('test delete answers from db', function () {
     answerId = await db.dbInterface.addAnswer('deleteAnswer', false, questionId)
   })
   it('should work', async function () {
-    db.dbInterface.deleteAnswer(answerId)
+    await db.dbInterface.deleteAnswer(answerId)
     await new Promise(resolve => setTimeout(resolve, 250))
     await db.dbInterface.getAnswers(questionId).then((result) => {
       expect(JSON.stringify(result).includes('deleteAnswer')).equal(false)
@@ -638,4 +641,3 @@ describe('test update answer in db', function () {
     }
   )
 })
-
