@@ -14,6 +14,14 @@ const subject = db.define('subject', {
   subjectName: {
     type: Sequelize.TEXT,
     allowNull: false
+  },
+  userId: {
+    type: Sequelize.TEXT,
+    references: {
+      model: 'users', // 'persons' refers to table name
+      key: 'userId', // 'id' refers to column name in persons table
+    },
+    onDelete: 'CASCADE'
   }
 })
 

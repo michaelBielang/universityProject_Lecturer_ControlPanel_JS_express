@@ -80,34 +80,36 @@ function checkHealth () {
  * @returns {Promise<unknown[]>}
  */
 function dropDb () {
-  return Promise.all([topicModel.destroy({truncate: true}),
-    userModel.destroy({truncate: true}),
+  return Promise.all([
+    topicModel.destroy({truncate: true}),
     subjectModel.destroy({truncate: true}),
     questionModel.destroy({truncate: true}),
     answerModel.destroy({truncate: true}),
-    setModel.destroy({truncate: true})])
+    setModel.destroy({truncate: true}),
+    userModel.destroy({truncate: true})])
 }
 
 /**
- * returns user id or false in error case
+ *
+ * @param rzId
  * @param firstName
  * @param lastName
  * @param email
  * @param title
  * @param password_encrypted
- * @returns {Promise<string> | Promise<boolean>}
+ * @returns {PromiseLike<T | boolean> | Promise<T | boolean>}
  */
 function addUser (rzId, firstName, lastName, email, title, password_encrypted) {
   // Create a new user
   return userModel.create({
-    rzId: rzId,
+    userId: rzId,
     firstName: firstName,
     lastName: lastName,
     email: email,
     title: title,
     password: password_encrypted
   }).then(userObj => {
-    return userObj.rzId
+    return userObj.userId
   }, () => {
     return false
   })
@@ -122,7 +124,7 @@ function getUser (rzId) {
   return new Promise((resolve, reject) => {
     userModel.findAll({
       where: {
-        rzId: rzId
+        userId: rzId
       }
     }).then(result => {
       if (result.length > 0) {
@@ -144,11 +146,11 @@ function deleteUser (rzId) {
   return new Promise((resolve, reject) => {
     userModel.destroy({
       where: {
-        rzId: rzId
+        userId: rzId
       }
     }).then(answerObj => {
       resolve(answerObj)
-    }, (err) => {
+    }, () => {
       reject(false)
     })
   })
@@ -336,10 +338,10 @@ function getSets (topicId) {
 function addSubject (subjectName, rzId) {
   return subjectModel.create({
     subjectName: subjectName,
-    rzId: rzId
+    userId: rzId
   }).then(result => {
     return result.id
-  }, () => {
+  }, (err) => {
     return false
   })
 }
@@ -404,11 +406,9 @@ function getSubject (subjectId) {
  */
 function getSubjects (userId) {
   return new Promise((resolve, reject) => {
-    subjectModel.findAll({
-      where: {rzId: userId}
-    }).then(results => {
+    subjectModel.findAll().then(results => {
       resolve(results)
-    }, () => {
+    }, (err) => {
       reject(false)
     })
   })
@@ -605,7 +605,8 @@ function getAnswers (questionId) {
 async function initDb () {
 
   // user has subjects
-  subjectModel.belongsTo(userModel, {foreignKey: 'rzId'})
+  //userModel.hasMany(subjectModel)
+  //subjectModel.belongsTo(userModel)
 
   // subject has topics
   subjectModel.hasMany(topicModel)

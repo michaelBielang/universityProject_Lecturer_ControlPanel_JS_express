@@ -13,18 +13,16 @@ const router = express.Router()
 let userId = 'asd'
 
 async function generateUserId (db) {
-  return await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e', 'nrg')
+  return await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e', 'f')
 }
 
 async function generateSubjectId (db) {
   const userId = await generateUserId(db)
-  console.log('userid: ' + userId)
-  return await db.dbInterface.addSubject('test', 'nrg')
+  return await db.dbInterface.addSubject('test', 'a')
 }
 
 async function generateTopicId (db) {
   const subjectId = await generateSubjectId(db)
-  console.log('subjectID: ' + subjectId)
   return await db.dbInterface.addTopic('test', subjectId)
 }
 
@@ -123,7 +121,8 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res, next) => {
-
+  await database.dbInterface.initDb()
+  await new Promise(resolve => setTimeout(resolve, 250))
   const password = req.body.password
   const rzId = req.body.rzLogin
   userId = rzId
@@ -136,9 +135,7 @@ router.post('/', async (req, res, next) => {
     }, async () => {
       //case user is not present
       console.log('2')
-      return await generateQuestionId(database) // todo remove for production
-      //todo activate for production
-      // return database.dbInterface.addUser('', '', '', '', '', rzId)
+      return await generateQuestionId(database)
     }).then(() => {
       console.log('3')
       res.redirect('/home')

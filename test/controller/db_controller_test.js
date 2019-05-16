@@ -38,7 +38,6 @@ async function generateQuestionId (db) {
   return await db.dbInterface.addQuestion('test', topicId)
 }
 
-/*
 describe('test add user db', function () {
   const db = require('../../src/controller/db_controller')
   before(async function () {
@@ -67,7 +66,7 @@ describe('test get user db', function () {
   const db = require('../../src/controller/db_controller')
   it('should work', async function () {
     await db.dbInterface.getUser('a').then((result) => {
-      expect(result.rzId).equal('a')
+      expect(result.userId).equal('a')
       return Promise.resolve()
     })
   })
@@ -115,7 +114,6 @@ describe('test add subject to db', function () {
     }
   )
 })
-*/
 
 describe('test get subjects from db', function () {
   const db = require('../../src/controller/db_controller')

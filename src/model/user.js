@@ -13,7 +13,7 @@ db.sync()
 
 const user = db.define('user', {
   // attributes
-  rzId: {
+  userId: {
     type: Sequelize.TEXT,
     primaryKey: true
   },
