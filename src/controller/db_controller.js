@@ -341,7 +341,7 @@ function addSubject (subjectName, rzId) {
     userId: rzId
   }).then(result => {
     return result.id
-  }, (err) => {
+  }, () => {
     return false
   })
 }
@@ -406,9 +406,13 @@ function getSubject (subjectId) {
  */
 function getSubjects (userId) {
   return new Promise((resolve, reject) => {
-    subjectModel.findAll().then(results => {
+    subjectModel.findAll(
+      {
+        where: {userId: userId}
+      }
+    ).then(results => {
       resolve(results)
-    }, (err) => {
+    }, () => {
       reject(false)
     })
   })

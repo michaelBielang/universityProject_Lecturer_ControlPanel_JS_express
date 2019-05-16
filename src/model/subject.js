@@ -18,8 +18,8 @@ const subject = db.define('subject', {
   userId: {
     type: Sequelize.TEXT,
     references: {
-      model: 'users', // 'persons' refers to table name
-      key: 'userId', // 'id' refers to column name in persons table
+      model: 'users',
+      key: 'userId',
     },
     onDelete: 'CASCADE'
   }
