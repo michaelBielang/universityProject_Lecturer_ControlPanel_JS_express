@@ -1,18 +1,11 @@
-/**
- * Created by Michael Bielang on 31.03.2019.
- * www.codemerger.com
- * bielang@codemerger.com
- *
- * Project:
- * java version "10.0.1"
- */
-var express = require('express')
-var router = express.Router()
+const questionRouter = require('./question');
+const answerRouter = require('./answer');
+const topicRouter = require('./topic');
+const subjectRouter = require('./subject');
 
-/* GET home page. */
-router.get('/', function (req, res) {
-  res.render('index', {title: 'HSA Training App'})
-})
-
-
-module.exports = router
+module.exports = (app) => {
+  app.use('/question', questionRouter);
+  app.use('/answer', answerRouter);
+  app.use('/topic', topicRouter);
+  app.use('/subject', subjectRouter);
+};
