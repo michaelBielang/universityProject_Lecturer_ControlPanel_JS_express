@@ -7,7 +7,6 @@
  * java version "10.0.1"
  */
 
-// important TODO -> user.sqlite is created where db_controller file is located. Make one global path possible
 const userModel = require('../model/user')
 const topicModel = require('../model/topic')
 const subjectModel = require('../model/subject')

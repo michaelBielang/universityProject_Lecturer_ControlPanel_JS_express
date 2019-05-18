@@ -118,5 +118,9 @@ form button:hover {
     background-color: #f5f7f9;
 }
 
-
+ul {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 20px;
+    list-style-type: none;
+}
 

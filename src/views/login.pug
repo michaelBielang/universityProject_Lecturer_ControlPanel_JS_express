@@ -7,6 +7,10 @@ html
     body
         .wrapper
             .container
+                if errors
+                    ul
+                        for error in errors
+                            li= error
                 h1=Msg
                 form(method='POST' action='')
                     div.form-group

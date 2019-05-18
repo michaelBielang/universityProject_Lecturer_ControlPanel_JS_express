@@ -12,6 +12,7 @@ const ldapjs = require('ldapjs')
 const router = express.Router()
 let userId = 'asd'
 
+// all following async functions are here for testing purposes only. Should be removed as soon as this app is finished
 async function generateUserId (db) {
   return await db.dbInterface.addUser('a', 'b', 'c', 'd', 'e', 'f')
 }
@@ -36,6 +37,11 @@ async function generateQuestionId (db) {
   return await db.dbInterface.addQuestion('test', topicId)
 }
 
+/**
+ * Sets HSA LDAP options
+ * @param url
+ * @returns {{idleTimeout: number, orgUnit: string, connectTimeout: number, url: *, timeout: number}}
+ */
 function ldapOptions (url) {
   return {
     url: url,
@@ -46,11 +52,16 @@ function ldapOptions (url) {
   }
 }
 
+/**
+ * Returns an LDAP Client for that session
+ * @returns {Promise<any>}
+ */
 function getLdapClient () {
   return new Promise((resolve, reject) => {
     let conCount = 0
     let foundCon = false
 
+    //
     const srvNumbs = [1, 2]
     srvNumbs.map((srvNo) => {
       const options = ldapOptions('ldap://ldap' + srvNo + '.fh-augsburg.de')
@@ -64,6 +75,7 @@ function getLdapClient () {
 
       client.on('connect', () => {
         foundCon = true
+        // resolve for client 1 or 2
         resolve(client)
       })
     })
@@ -89,6 +101,13 @@ function getLdapClient () {
   })
 }
 
+/**
+ * Performs LDAP Auth process
+ * @param client
+ * @param user
+ * @param pass
+ * @returns {Promise<any>}
+ */
 function auth (client, user, pass) {
   user = user.toLowerCase()
   return new Promise((resolve, reject) => {
@@ -116,13 +135,14 @@ function auth (client, user, pass) {
 }
 
 router.get('/', async (req, res) => {
+
+  // init db model. Will be ignored if already applied
   await database.dbInterface.initDb()
   res.render('login', {Msg: 'Welcome'})
 })
 
 router.post('/', async (req, res, next) => {
-  await database.dbInterface.initDb()
-  await new Promise(resolve => setTimeout(resolve, 250))
+
   const password = req.body.password
   const rzId = req.body.rzLogin
   userId = rzId
@@ -146,7 +166,7 @@ router.post('/', async (req, res, next) => {
       }
     )
 
-  // TODO for production
+  // TODO activate for production
   /*await getLdapClient().then(resolve => {
     return auth(resolve, rzId, password)
   }).then(() => {
@@ -163,9 +183,12 @@ router.post('/', async (req, res, next) => {
       })
   }).then(() => {
     res.redirect('/home')
-  }).catch(() => {
-      //TODO handle error case with view
-      res.render('login', {Msg: 'Welcome'})
+  }).catch((err) => {
+      res.render('login', {
+        title: 'Login form',
+        errors: [err.message, 'Please try again!'],
+        data: req.body,
+      })
     }
   )*/
 })

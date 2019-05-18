@@ -41,6 +41,7 @@ async function generateQuestionId (db) {
 describe('test add user db', function () {
   const db = require('../../src/controller/db_controller')
   before(async function () {
+    await db.dbInterface.dropDb()
     await db.dbInterface.initDb()
     await new Promise(resolve => setTimeout(resolve, 250))
   })
