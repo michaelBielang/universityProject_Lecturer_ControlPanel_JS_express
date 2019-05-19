@@ -14,11 +14,7 @@ const session = require('express-session')
 router.get('/', async (req, res) => {
   if (session.user) {
     const subjects = await database.dbInterface.getSubjects(session.user)
-    subjects.forEach(function(element) {
-      console.log(element.dataValues);
-    });
     res.render('home', {
-      Msg: 'Welcome',
       subjects: subjects
     })
   } else {
