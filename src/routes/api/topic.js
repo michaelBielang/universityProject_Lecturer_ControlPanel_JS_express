@@ -1,6 +1,6 @@
 const express = require('express');
-const {body, validationResult} = require('express-validator/check');
-const database = require('../controller/db_controller');
+const {body, validationResult} = require('express-validator/check/index');
+const database = require('../../controller/db_controller');
 const router = express.Router();
 
 router.get('/getAll/:subjectId([0-9]+)', async (req, res, next) => {

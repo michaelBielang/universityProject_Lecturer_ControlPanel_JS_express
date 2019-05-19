@@ -139,7 +139,7 @@ function getUser (rzId) {
 
 /**
  *
- * @param rzId
+ * @param deleted rows
  */
 function deleteUser (rzId) {
   return new Promise((resolve, reject) => {
@@ -147,8 +147,8 @@ function deleteUser (rzId) {
       where: {
         userId: rzId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })
@@ -199,8 +199,8 @@ function deleteTopic (topicId) {
       where: {
         id: topicId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })
@@ -279,11 +279,12 @@ function updateSet (setName, setId) {
 }
 
 /**
- * Deletes a set
+ *
  * @param setId
+ * @returns deleted rows
  */
 function deleteSet (setId) {
-  setModel.destroy({
+  return setModel.destroy({
     where: {
       id: setId
     }
@@ -362,7 +363,7 @@ function updateSubject (subjectName, subjectId) {
 }
 
 /**
- *
+ * Delete subjects
  * @param subjectId
  * @return {Promise<any>}
  */
@@ -372,8 +373,8 @@ function deleteSubject (subjectId) {
       where: {
         id: subjectId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })
@@ -455,7 +456,7 @@ function updateQuestion (newQuestion, questionId) {
 }
 
 /**
- *
+ * Delete Questions
  * @param questionId
  * @return {Promise<any>}
  */
@@ -465,8 +466,8 @@ function deleteQuestion (questionId) {
       where: {
         id: questionId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })
@@ -546,7 +547,7 @@ function updateAnswer (newAnswer, answerId) {
 }
 
 /**
- *
+ * Delete answers
  * @param answerId
  * @returns {Promise<any>}
  */
@@ -556,8 +557,8 @@ function deleteAnswer (answerId) {
       where: {
         id: answerId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })

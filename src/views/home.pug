@@ -1,4 +1,13 @@
 extends layout
 
+block style
+    include css/home.css
+
 block content
-    p test
+
+    .whup
+        .classText Your Classes
+        p
+        .list-group
+            for subject in subjects
+                a.list-group-item.list-group-item-action(href='/subject=' + subject.subjectName)=subject.subjectName

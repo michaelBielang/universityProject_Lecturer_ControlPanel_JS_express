@@ -7,9 +7,11 @@ html
         script (src = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js")
         link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
 
-
     script
         block script
+
+    style
+        block style
 
     body
         style
@@ -20,18 +22,12 @@ html
                     ul.navbar-nav.mr-auto
                         li.nav-item.active
                             a.nav-link(href='/') Home
-                        li.nav-item.active
-                            a.nav-link(href='/subjects') Fächer
-                .mx-auto.order-0
-                    a.navbar-brand.mx-auto.logo(href='#') Campus Arcade CP
-                    button.navbar-toggler(type='button', data-toggle='collapse', data-target='.dual-collapse2')
-                        span.navbar-toggler-icon
                 .navbar-collapse.collapse.w-100.order-3.dual-collapse2
                     ul.navbar-nav.ml-auto
                         li.nav-item
-                            a.nav-link(href='/cc') CC
+                            a.nav-link.active(href='/cc') CC
                         li.nav-item
-                            a.nav-link(href='/logout') Logout
+                            a.nav-link.active(href='/logout') Logout
             block content
 
 

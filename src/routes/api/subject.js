@@ -1,45 +1,44 @@
 const express = require('express');
-const {body, validationResult} = require('express-validator/check');
-const database = require('../controller/db_controller');
+const {body, validationResult} = require('express-validator/check/index');
+const database = require('../../controller/db_controller');
 const router = express.Router();
 
-router.get('/getAll/:topicId([0-9]+)', async (req, res, next) => {
+router.get('/getAll/:userId([0-9]+)',  async (req, res, next) => {
     try {
-        const data = await database.dbInterface.getQuestions(req.params.topicId);
-        res.json({data});
+        const data = await database.dbInterface.getSubjects(req.params.userId);
+        res.json({ data });
     } catch (e) {
         next({message: 'Something went wrong'});
     }
 });
 
-router.get('/:questionId([0-9]+)', async (req, res, next) => {
+router.get('/:id([0-9]+)', async (req, res, next) => {
     try {
-        const data = await database.dbInterface.getQuestion(req.params.questionId);
-        res.json({data});
+        const data = await database.dbInterface.getSubject(req.params.id);
+        res.json({ data });
     } catch (e) {
         next({message: 'Something went wrong'});
     }
 });
-
 
 router.post('/', [
-    body('question')
+    body('subjectName')
         .isLength({min: 1}),
-    body('topicId')
+    body('userId')
         .isLength({min: 1}),
 ], async (req, res, next) => {
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
         try {
-            const data = await database.dbInterface.addQuestion(req.question, req.topicId);
+            const data = await database.dbInterface.addSubject(req.subjectName, req.userId);
             res.json({data});
         } catch (e) {
             next({message: 'Something went wrong'});
         }
     } else {
-        res.render('error', {
-            title: 'Question Error',
+        res.render('Subject', {
+            title: 'Subject Error',
             errors: errors.array(),
             data: req.body,
         })
@@ -47,23 +46,23 @@ router.post('/', [
 });
 
 router.post('/update', [
-    body('newQuestion')
+    body('subjectName')
         .isLength({min: 1}),
-    body('questionId')
+    body('subjectId')
         .isLength({min: 1}),
 ], async (req, res, next) => {
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
         try {
-            const data = await database.dbInterface.updateQuestion(req.newQuestion, req.questionId);
+            const data = await database.dbInterface.updateSubject(req.subjectName, req.subjectId);
             res.json({data});
         } catch (e) {
             next({message: 'Something went wrong'});
         }
     } else {
-        res.render('error', {
-            title: 'Topic Error',
+        res.render('Subject', {
+            title: 'Subject Error',
             errors: errors.array(),
             data: req.body,
         })
@@ -72,11 +71,12 @@ router.post('/update', [
 
 router.delete('/:id([0-9]+)', async (req, res, next) => {
     try {
-        const data = await database.dbInterface.deleteQuestion(req.params.id);
+        const data = await database.dbInterface.deleteSubject(req.params.id);
         res.json({data});
     } catch (e) {
         next({message: 'Something went wrong'});
     }
 });
+
 
 module.exports = router;

@@ -7,10 +7,10 @@
  * java version "10.0.1"
  */
 const express = require('express')
-const database = require('../controller/db_controller')
+const database = require('../../controller/db_controller')
 const ldapjs = require('ldapjs')
 const router = express.Router()
-let userId = 'asd'
+const session = require('express-session')
 
 // all following async functions are here for testing purposes only. Should be removed as soon as this app is finished
 async function generateUserId (db) {
@@ -19,7 +19,7 @@ async function generateUserId (db) {
 
 async function generateSubjectId (db) {
   const userId = await generateUserId(db)
-  return await db.dbInterface.addSubject('test', 'a')
+  return await db.dbInterface.addSubject('test', userId)
 }
 
 async function generateTopicId (db) {
@@ -145,23 +145,19 @@ router.post('/', async (req, res, next) => {
 
   const password = req.body.password
   const rzId = req.body.rzLogin
-  userId = rzId
   // TODO for testing
   await database.dbInterface.getUser(rzId)
     .then(() => {
       //case user is present
-      console.log('1')
       return Promise.resolve()
     }, async () => {
       //case user is not present
-      console.log('2')
       return await generateQuestionId(database)
     }).then(() => {
-      console.log('3')
+      session.user = rzId
       res.redirect('/home')
     }).catch(() => {
         //TODO handle error case with view
-        console.log('4')
         res.render('login', {Msg: 'Welcome'})
       }
     )
@@ -174,12 +170,12 @@ router.post('/', async (req, res, next) => {
       .then(() => {
         //case user is present
 
-        this.userId = rzId
+        session.user = rzId
         return Promise.resolve()
       }, () => {
         //case user is not present
 
-        return database.dbInterface.addUser('', '', '', '', '', rzId)
+        return database.dbInterface.addUser(rzId, '', '', '', '', '')
       })
   }).then(() => {
     res.redirect('/home')
@@ -194,6 +190,3 @@ router.post('/', async (req, res, next) => {
 })
 
 module.exports = router
-module.exports.myTest = function () {
-  return userId
-}

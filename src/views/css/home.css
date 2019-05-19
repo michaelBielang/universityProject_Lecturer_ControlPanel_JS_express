@@ -1,0 +1,12 @@
+.whup {
+    text-align: center;
+    width: 400px;
+    position: absolute;
+    left: 33%;
+    top: 15%;
+}
+
+.classText {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 20px;
+}
