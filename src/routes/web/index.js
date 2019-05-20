@@ -4,7 +4,6 @@ const topicRouter = require('../api/topic')
 const subjectRouter = require('../api/subject')
 const loginController = require('./login')
 const homeController = require('./home')
-const testController = require('./sessionTest')
 
 module.exports = (app) => {
   app.use('/', loginController)
@@ -13,5 +12,4 @@ module.exports = (app) => {
   app.use('/topic', topicRouter)
   app.use('/subject', subjectRouter)
   app.use('/home', homeController)
-  app.use('/test', testController)
 }
