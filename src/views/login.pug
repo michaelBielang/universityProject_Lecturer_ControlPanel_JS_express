@@ -1,0 +1,22 @@
+html
+    head
+        style
+            include css/login.css
+
+
+    body
+        .wrapper
+            .container
+                if errors
+                    ul
+                        for error in errors
+                            li= error
+                h1=Msg
+                form(method='POST' action='')
+                    div.form-group
+                        label(for='rzLogin')
+                        input.form-control(type='text' id='rzLogin' placeholder='RZ-Login' name='rzLogin' required)
+                    div.form-group
+                        label(for='password')
+                        input.form-control(type='password' id='password' placeholder='Password' name='password' required)
+                    button(type='submit') Login

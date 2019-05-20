@@ -7,7 +7,6 @@
  * java version "10.0.1"
  */
 
-// important TODO -> user.sqlite is created where db_controller file is located. Make one global path possible
 const userModel = require('../model/user')
 const topicModel = require('../model/topic')
 const subjectModel = require('../model/subject')
@@ -80,51 +79,58 @@ function checkHealth () {
  * @returns {Promise<unknown[]>}
  */
 function dropDb () {
-  return Promise.all([topicModel.destroy({truncate: true}),
-    userModel.destroy({truncate: true}),
+  return Promise.all([
+    topicModel.destroy({truncate: true}),
     subjectModel.destroy({truncate: true}),
     questionModel.destroy({truncate: true}),
     answerModel.destroy({truncate: true}),
-    setModel.destroy({truncate: true})])
+    setModel.destroy({truncate: true}),
+    userModel.destroy({truncate: true})])
 }
 
 /**
- * returns user id or false in error case
+ *
+ * @param rzId
  * @param firstName
  * @param lastName
  * @param email
  * @param title
  * @param password_encrypted
- * @returns {Promise<number> | Promise<boolean>}
+ * @returns {PromiseLike<T | boolean> | Promise<T | boolean>}
  */
-function addUser (firstName, lastName, email, title, password_encrypted) {
+function addUser (rzId, firstName, lastName, email, title, password_encrypted) {
   // Create a new user
   return userModel.create({
+    userId: rzId,
     firstName: firstName,
     lastName: lastName,
     email: email,
     title: title,
     password: password_encrypted
   }).then(userObj => {
-    return userObj.id
+    return userObj.userId
   }, () => {
     return false
   })
 }
 
 /**
- * returns user id or false in error case
- * @param email
- * @returns {Promise<number> | Promise<boolean>}
+ * returns the user
+ * @param rzId
+ * @returns {Promise<user> | Promise<boolean>}
  */
-function getUser (email) {
+function getUser (rzId) {
   return new Promise((resolve, reject) => {
     userModel.findAll({
       where: {
-        email: email
+        userId: rzId
       }
     }).then(result => {
-      resolve(result[0].dataValues)
+      if (result.length > 0) {
+        resolve(result[0].dataValues)
+      } else {
+        reject()
+      }
     }, () => {
       reject(false)
     })
@@ -133,13 +139,13 @@ function getUser (email) {
 
 /**
  *
- * @param email
+ * @param rzId
  */
-function deleteUser (email) {
+function deleteUser (rzId) {
   return new Promise((resolve, reject) => {
     userModel.destroy({
       where: {
-        email: email
+        userId: rzId
       }
     }).then(answerObj => {
       resolve(answerObj)
@@ -316,8 +322,7 @@ function getSets (topicId) {
       }
     }).then(results => {
       resolve(results)
-    }, (err) => {
-      console.log(err)
+    }, () => {
       reject(false)
     })
   })
@@ -326,13 +331,13 @@ function getSets (topicId) {
 /**
  * Returns id or false if fails
  * @param subjectName
- * @param userId
+ * @param rzId
  * @returns {PromiseLike<number> | Promise<boolean>}
  */
-function addSubject (subjectName, userId) {
+function addSubject (subjectName, rzId) {
   return subjectModel.create({
     subjectName: subjectName,
-    userId: userId
+    userId: rzId
   }).then(result => {
     return result.id
   }, () => {
@@ -400,9 +405,11 @@ function getSubject (subjectId) {
  */
 function getSubjects (userId) {
   return new Promise((resolve, reject) => {
-    subjectModel.findAll({
-      where: {userId: userId}
-    }).then(results => {
+    subjectModel.findAll(
+      {
+        where: {userId: userId}
+      }
+    ).then(results => {
       resolve(results)
     }, () => {
       reject(false)
@@ -601,8 +608,8 @@ function getAnswers (questionId) {
 async function initDb () {
 
   // user has subjects
-  userModel.hasMany(subjectModel)
-  subjectModel.belongsTo(userModel)
+  //userModel.hasMany(subjectModel)
+  //subjectModel.belongsTo(userModel)
 
   // subject has topics
   subjectModel.hasMany(topicModel)
