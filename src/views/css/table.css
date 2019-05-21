@@ -32,13 +32,6 @@ div.actionItems {
     justify-content: space-between;
 }
 
-
-ul {
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 20px;
-    list-style-type: none;
-}
-
 .bg-bubbles {
     position: absolute;
     top: 0;
