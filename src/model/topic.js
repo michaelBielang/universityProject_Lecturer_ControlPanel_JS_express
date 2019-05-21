@@ -13,9 +13,22 @@ const db = require('../db/database').sequeliceInstance
  */
 const topic = db.define('topic', {
   // attributes
+  topicId: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   topicName: {
     type: Sequelize.TEXT,
     allowNull: false
+  },
+  subjectId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: 'subjects',
+      key: 'subjectId',
+    },
+    onDelete: 'CASCADE'
   }
 })
 

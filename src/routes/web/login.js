@@ -19,22 +19,32 @@ async function generateUserId (db) {
 
 async function generateSubjectId (db) {
   const userId = await generateUserId(db)
-  return await db.dbInterface.addSubject('test', userId)
+  console.log('userId: ' + userId)
+  return await db.dbInterface.addSubject('subject', userId)
 }
 
 async function generateTopicId (db) {
   const subjectId = await generateSubjectId(db)
-  return await db.dbInterface.addTopic('test', subjectId)
+  console.log('subjectId: ' + subjectId)
+  return await db.dbInterface.addTopic('topic', subjectId)
 }
 
 async function generateSetId (db) {
   const topicId = await generateTopicId(db)
-  return await db.dbInterface.addSet('test', topicId)
+  console.log('topicId: ' + topicId)
+  return await db.dbInterface.addSet('set', topicId)
 }
 
 async function generateQuestionId (db) {
-  const topicId = await generateSetId(db)
-  return await db.dbInterface.addQuestion('test', topicId)
+  const setId = await generateSetId(db)
+  console.log('setId: ' + setId)
+  return await db.dbInterface.addQuestion('question', setId)
+}
+
+async function generateAnswerId (db) {
+  const answerId = await generateQuestionId(db)
+  console.log('answerId: ' + answerId)
+  return await db.dbInterface.addAnswer('answer', answerId)
 }
 
 /**
@@ -135,9 +145,10 @@ function auth (client, user, pass) {
 }
 
 router.get('/', async (req, res) => {
-
   // init db model. Will be ignored if already applied
   await database.dbInterface.initDb()
+
+  await Promise.resolve(resolve => setTimeout(resolve, 250))
   res.render('login', {Msg: 'Welcome'})
 })
 
@@ -152,12 +163,11 @@ router.post('/', async (req, res, next) => {
       return Promise.resolve()
     }, async () => {
       //case user is not present
-      return await generateQuestionId(database)
+      return await generateAnswerId(database)
     }).then(() => {
       session.user = rzId
       res.redirect('/home')
     }).catch(() => {
-        //TODO handle error case with view
         res.render('login', {Msg: 'Welcome'})
       }
     )

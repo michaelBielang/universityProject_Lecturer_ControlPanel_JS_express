@@ -57,6 +57,7 @@ describe('test add user db', function () {
   )
 })
 
+
 describe('test get user db', function () {
   before(async function () {
     await db.dbInterface.initDb()
@@ -96,6 +97,7 @@ describe('test delete user db', function () {
     }
   )
 })
+
 
 describe('test add subject to db', function () {
   const db = require('../../src/controller/db_controller')
