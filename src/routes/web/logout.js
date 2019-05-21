@@ -7,15 +7,14 @@
  * java version "10.0.1"
  */
 const express = require('express')
-const database = require('../../controller/db_controller')
 const router = express.Router()
 const session = require('express-session')
 
 router.get('/', async (req, res) => {
   if (session.user) {
-    const subjects = await database.dbInterface.getSubjects(session.user)
-    res.render('home', {
-      subjects: subjects
+    req.session.destroy(function () {
+      session.user = undefined
+      res.redirect('/')
     })
   } else {
     res.redirect('/')

@@ -147,7 +147,6 @@ function auth (client, user, pass) {
 router.get('/', async (req, res) => {
   // init db model. Will be ignored if already applied
   await database.dbInterface.initDb()
-
   await Promise.resolve(resolve => setTimeout(resolve, 250))
   res.render('login', {Msg: 'Welcome'})
 })
