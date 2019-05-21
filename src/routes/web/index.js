@@ -8,9 +8,9 @@ const homeController = require('./home')
 const logoutController = require('./logout')
 const session = require('express-session')
 
-function sessionMiddleware(req, res, next) {
+function sessionMiddleware (req, res, next) {
   if (session.user) {
-    next();
+    next()
   } else {
     res.redirect('/')
   }
@@ -19,6 +19,7 @@ function sessionMiddleware(req, res, next) {
 module.exports = (app) => {
   app.use('/', loginController)
   app.use('/home', sessionMiddleware, homeController)
+  app.use('/logout', sessionMiddleware, logoutController)
   app.use('/api/question', questionRouter)
   app.use('/api/answer', answerRouter)
   app.use('/api/topic', topicRouter)
