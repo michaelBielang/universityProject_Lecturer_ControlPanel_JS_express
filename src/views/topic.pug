@@ -4,22 +4,32 @@ block style
     include css/table.css
 
 block content
-    #content
-        p.title Topic
-        table.table.table-striped
-            tr
-                th Topic Id
-                th Topic Name
-                th Actions
-            for topic in topics
+    form(method='POST' action='/topic/')
+        #content
+            p.title Topic
+            table.table.table-striped
                 tr
-                    td=topic.topicId
-                    td=topic.subjectName
+                    th Topic Id
+                    th Topic Name
+                    th Actions
+                for topic in topics
+                    tr
+                        td=topic.topicId
+                        td=topic.topicName
+                        td
+                            div.actionItems
+                                a(href='/topic/' + topic.topicId)
+                                    i.fas.fa-edit
+                                a(href='/topic/delete/' + topic.topicId)
+                                    i.fas.fa-trash-alt
+                                a(href='/set/getAll/' + topic.topicId)
+                                    i.fas.fa-arrow-right
+                tr
+                    td
+                    td
+                        input.form-control(type='text' id='topicName' name='topicName' required)
+                        input.form-control(type='hidden' id='subjectId' name='subjectId' value=subjectId required)
                     td
                         div.actionItems
-                            a(href='/topic/' + topic.topicId)
-                                i.fas.fa-edit
-                            a(href='/topic/delete/' + topic.topicId)
-                                i.fas.fa-trash-alt
-                            a(href='/topic/getAll/' + topic.topicId)
-                                i.fas.fa-arrow-right
+                            button(type='submit' class='btn btn-success')
+                                i.fas.fa-plus  Hinzufügen

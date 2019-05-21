@@ -60,7 +60,6 @@ router.post('/update', [
 
 router.get('/delete/:id([0-9]+)', async (req, res, next) => {
   try {
-    console.log(req.params.id)
     await database.dbInterface.deleteSubject(req.params.id)
     res.redirect('/home')
   } catch (exception) {
