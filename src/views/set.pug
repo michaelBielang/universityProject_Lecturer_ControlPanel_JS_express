@@ -1,0 +1,36 @@
+extends layout
+
+block style
+    include css/table.css
+
+block content
+    form(method='POST' action='/set/')
+        #content
+            p.title Set
+            table.table.table-striped
+                tr
+                    th Set Id
+                    th Set Name
+                    th Actions
+                for set in sets
+                    tr
+                        td=set.setId
+                        td=set.setName
+                        td
+                            div.actionItems
+                                a(href='/set/' + set.setId)
+                                    i.fas.fa-edit
+                                a(href='/set/delete/' + set.setId)
+                                    i.fas.fa-trash-alt
+                                a(href='/question/getAll/' + set.setId)
+                                    i.fas.fa-arrow-right
+                tr
+                    td
+                    td
+                        input.form-control(type='text' id='setName' name='setName' required)
+                        input.form-control(type='hidden' id='topicId' name='topicId' value=topicId required)
+                    td
+                        div.actionItems
+                            button(type='submit' class='btn btn-success')
+                                i.fas.fa-plus  Hinzufügen
+

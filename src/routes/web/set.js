@@ -3,15 +3,12 @@ const {body, validationResult} = require('express-validator/check/index')
 const database = require('../../controller/db_controller')
 const router = express.Router()
 
-/**
- * Displays all topics belonging to a particular subject
- */
-router.get('/getAll/:subjectId([0-9]+)', async (req, res, next) => {
+router.get('/getAll/:topicId([0-9]+)', async (req, res, next) => {
   try {
-    const data = await database.dbInterface.getTopics(req.params.subjectId)
-    res.render('topic', {
-      topics: data,
-      subjectId: req.params.subjectId
+    const data = await database.dbInterface.getSets(req.params.topicId)
+    res.render('set', {
+      sets: data,
+      topicId: req.params.topicId
     })
   } catch (e) {
     next({message: 'Something went wrong'})
@@ -19,43 +16,14 @@ router.get('/getAll/:subjectId([0-9]+)', async (req, res, next) => {
 })
 
 router.get('/:id([0-9]+)', async (req, res) => {
-  const topic = await database.dbInterface.getTopic(req.params.id)
-  res.render('topic_edit', {
-    topic: topic[0].dataValues
+  const set = await database.dbInterface.getSet(req.params.id)
+  res.render('set_edit', {
+    set: set[0].dataValues
   })
 })
 
-/**
- * Adds a new topic
- */
 router.post('/', [
-  body('topicName')
-    .isLength({min: 1}),
-  body('subjectId')
-    .isLength({min: 1}),
-], async (req, res, next) => {
-  const errors = validationResult(req)
-  if (errors.isEmpty()) {
-    try {
-      await database.dbInterface.addTopic(req.body.topicName, req.body.subjectId)
-      res.redirect('back')
-    } catch (exception) {
-      next({message: exception})
-    }
-  } else {
-    res.render('error', {
-      title: 'Topic Error',
-      errors: errors.array(),
-      data: req.body,
-    })
-  }
-})
-
-/**
- * Updates a new topic
- */
-router.post('/update', [
-  body('topicName')
+  body('setName')
     .isLength({min: 1}),
   body('topicId')
     .isLength({min: 1}),
@@ -64,15 +32,39 @@ router.post('/update', [
 
   if (errors.isEmpty()) {
     try {
-      await database.dbInterface.updateTopic(req.body.topicName, req.body.topicId)
-      const topic = await database.dbInterface.getTopic(req.body.topicId)
-      res.redirect('/topic/getAll/' + topic[0].subjectId)
+      await database.dbInterface.addSet(req.body.setName, req.body.topicId)
+      res.redirect('back')
     } catch (exception) {
       next({message: exception})
     }
   } else {
     res.render('error', {
-      title: 'Topic Error',
+      title: 'set Error',
+      errors: errors.array(),
+      data: req.body,
+    })
+  }
+})
+
+router.post('/update', [
+  body('setName')
+    .isLength({min: 1}),
+  body('setId')
+    .isLength({min: 1}),
+], async (req, res, next) => {
+  const errors = validationResult(req)
+
+  if (errors.isEmpty()) {
+    try {
+      await database.dbInterface.updateSet(req.body.setName, req.body.setId)
+      const set = await database.dbInterface.getSet(req.body.setId)
+      res.redirect('/set/getAll/' + set[0].topicId)
+    } catch (exception) {
+      next({message: exception})
+    }
+  } else {
+    res.render('error', {
+      title: 'Set Error',
       errors: errors.array(),
       data: req.body,
     })
@@ -81,7 +73,8 @@ router.post('/update', [
 
 router.get('/delete/:id([0-9]+)', async (req, res, next) => {
   try {
-    await database.dbInterface.deleteTopic(req.params.id)
+    console.log(req.params.id)
+    await database.dbInterface.deleteSet(req.params.id)
     res.redirect('back')
   } catch (exception) {
     next({message: exception})
@@ -89,4 +82,3 @@ router.get('/delete/:id([0-9]+)', async (req, res, next) => {
 })
 
 module.exports = router
-
