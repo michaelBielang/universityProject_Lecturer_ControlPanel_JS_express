@@ -53,13 +53,13 @@ router.post('/update', [
 
     if (errors.isEmpty()) {
         try {
-            const data = await database.dbInterface.updateSubject(req.subjectName, req.subjectId);
-            res.json({data});
+            const data = await database.dbInterface.updateSubject(req.body.subjectName, req.body.subjectId);
+            res.redirect('/home')
         } catch (e) {
             next({message: 'Something went wrong'});
         }
     } else {
-        res.render('Subject', {
+        res.render('error', {
             title: 'Subject Error',
             errors: errors.array(),
             data: req.body,
@@ -67,10 +67,11 @@ router.post('/update', [
     }
 });
 
-router.delete('/:id([0-9]+)', async (req, res, next) => {
+router.get('/delete/:id([0-9]+)', async (req, res, next) => {
     try {
-        const data = await database.dbInterface.deleteSubject(req.params.id);
-        res.json({data});
+        console.log(req.params.id)
+        await database.dbInterface.deleteSubject(req.params.id);
+        res.redirect('/home');
     } catch (e) {
         next({message: 'Something went wrong'});
     }
