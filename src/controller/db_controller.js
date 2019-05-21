@@ -393,8 +393,8 @@ function getSubject (subjectId) {
       where: {
         subjectId: subjectId
       }
-    }).then(topicObj => {
-      resolve(topicObj)
+    }).then(subjectObject => {
+      resolve(subjectObject)
     }, () => {
       reject(false)
     })

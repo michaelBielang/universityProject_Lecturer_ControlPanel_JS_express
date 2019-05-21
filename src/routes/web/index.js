@@ -6,6 +6,7 @@ const setRouter = require('../api/set')
 const loginController = require('./login')
 const homeController = require('./home')
 const logoutController = require('./logout')
+const ccController = require('./settings')
 const session = require('express-session')
 
 function sessionMiddleware (req, res, next) {
@@ -20,6 +21,7 @@ module.exports = (app) => {
   app.use('/', loginController)
   app.use('/home', sessionMiddleware, homeController)
   app.use('/logout', sessionMiddleware, logoutController)
+  app.use('/cc', sessionMiddleware, ccController)
   app.use('/api/question', questionRouter)
   app.use('/api/answer', answerRouter)
   app.use('/api/topic', topicRouter)
