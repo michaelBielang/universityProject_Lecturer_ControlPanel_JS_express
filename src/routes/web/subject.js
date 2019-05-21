@@ -29,8 +29,8 @@ router.post('/', [
 
     if (errors.isEmpty()) {
         try {
-            const data = await database.dbInterface.addSubject(req.subjectName, req.userId);
-            res.json({data});
+            const data = await database.dbInterface.addSubject(req.body.subjectName, req.body.userId);
+            res.redirect('/home');
         } catch (e) {
             next({message: 'Something went wrong'});
         }

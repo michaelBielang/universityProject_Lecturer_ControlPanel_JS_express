@@ -4,22 +4,32 @@ block style
     include css/table.css
 
 block content
-    #content
-        p.title Subject
-        table.table.table-striped
-          tr
-            th Subject Id
-            th Subject Name
-            th Actions
-          for subject in subjects
+    form(method='POST' action='/subject/')
+        #content
+            p.title Subject
+            table.table.table-striped
               tr
-                td=subject.subjectId
-                td=subject.subjectName
+                th Subject Id
+                th Subject Name
+                th Actions
+              for subject in subjects
+                  tr
+                    td=subject.subjectId
+                    td=subject.subjectName
+                    td
+                      div.actionItems
+                        a(href='/subject/' + subject.subjectId)
+                            i.fas.fa-edit
+                        a(href='/subject/delete/' + subject.subjectId)
+                            i.fas.fa-trash-alt
+                        a(href='/topic/getAll/' + subject.subjectId)
+                            i.fas.fa-arrow-right
+              tr
+                td
+                td
+                    input.form-control(type='text' id='subjectName' name='subjectName' required)
+                    input.form-control(type='hidden' id='userId' name='userId' value=userId required)
                 td
                   div.actionItems
-                    a(href='/subject/' + subject.subjectId)
-                        i.fas.fa-edit
-                    a(href='/subject/delete/' + subject.subjectId)
-                        i.fas.fa-trash-alt
-                    a(href='/topic/getAll/' + subject.subjectId)
-                        i.fas.fa-arrow-right
+                    button(type='submit' class='btn btn-success')
+                      i.fas.fa-plus  Hinzufügen
