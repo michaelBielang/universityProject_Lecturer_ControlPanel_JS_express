@@ -14,7 +14,8 @@ const session = require('express-session')
 router.get('/', async (req, res) => {
     const subjects = await database.dbInterface.getSubjects(session.user)
     res.render('home', {
-      subjects: subjects
+      subjects: subjects,
+      userId: session.user
     })
 })
 
