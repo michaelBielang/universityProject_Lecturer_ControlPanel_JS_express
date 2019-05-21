@@ -1,0 +1,21 @@
+#content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 20px;
+}
+
+table {
+    background-color: white;
+}
+
+div.actionItems {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

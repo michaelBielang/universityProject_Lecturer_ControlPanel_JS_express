@@ -13,12 +13,10 @@ router.get('/getAll/:userId([0-9]+)',  async (req, res, next) => {
 });
 
 router.get('/:id([0-9]+)', async (req, res, next) => {
-    try {
-        const data = await database.dbInterface.getSubject(req.params.id);
-        res.json({ data });
-    } catch (e) {
-        next({message: 'Something went wrong'});
-    }
+    const subject = await database.dbInterface.getSubject(req.params.id);
+    res.render('edit', {
+        subject: subject[0].dataValues
+    })
 });
 
 router.post('/', [
