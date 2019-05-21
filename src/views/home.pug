@@ -6,30 +6,38 @@ block style
 block content
     form(method='POST' action='/subject/')
         #content
-            p.title Subject
-            table.table.table-striped
-              tr
-                th Subject Id
-                th Subject Name
-                th Actions
-              for subject in subjects
-                  tr
-                    td=subject.subjectId
-                    td=subject.subjectName
-                    td
-                      div.actionItems
-                        a(href='/subject/' + subject.subjectId)
-                            i.fas.fa-edit
-                        a(href='/subject/delete/' + subject.subjectId)
-                            i.fas.fa-trash-alt
-                        a(href='/topic/getAll/' + subject.subjectId)
-                            i.fas.fa-arrow-right
-              tr
-                td
-                td
-                    input.form-control(type='text' id='subjectName' name='subjectName' required)
-                    input.form-control(type='hidden' id='userId' name='userId' value=userId required)
-                td
-                  div.actionItems
-                    button(type='submit' class='btn btn-success')
-                      i.fas.fa-plus  Hinzufügen
+            div.tablew
+                table.table.table-striped
+                    tr
+                        th Subject Name
+                        th Actions
+                    for subject in subjects
+                        tr
+                            td=subject.subjectName
+                            td
+                                div.actionItems
+                                    a(href='/subject/' + subject.subjectId)
+                                        i.fas.fa-edit
+                                    a(href='/subject/delete/' + subject.subjectId)
+                                        i.fas.fa-trash-alt
+                                    a(href='/topic/getAll/' + subject.subjectId)
+                                        i.fas.fa-arrow-right
+                    tr
+                        td
+                            input.form-control(type='text' id='subjectName' name='subjectName' required)
+                            input.form-control(type='hidden' id='userId' name='userId' value=userId required)
+                        td
+                            div.actionItems
+                                button(type='submit' class='btn btn-success')
+                                    i.fas.fa-plus  Hinzufügen
+            ul.bg-bubbles
+                li
+                li
+                li
+                li
+                li
+                li
+                li
+                li
+                li
+                li
