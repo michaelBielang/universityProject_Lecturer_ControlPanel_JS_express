@@ -1,0 +1,25 @@
+extends layout
+
+block style
+    include css/table.css
+
+block content
+    #content
+        p.title Topic
+        table.table.table-striped
+            tr
+                th Topic Id
+                th Topic Name
+                th Actions
+            for topic in topics
+                tr
+                    td=topic.topicId
+                    td=topic.subjectName
+                    td
+                        div.actionItems
+                            a(href='/topic/' + topic.topicId)
+                                i.fas.fa-edit
+                            a(href='/topic/delete/' + topic.topicId)
+                                i.fas.fa-trash-alt
+                            a(href='/topic/getAll/' + topic.topicId)
+                                i.fas.fa-arrow-right
