@@ -61,11 +61,10 @@ router.post('/update', [
     .isLength({min: 1}),
 ], async (req, res, next) => {
   const errors = validationResult(req)
-
   if (errors.isEmpty()) {
     try {
       await database.dbInterface.updateQuestion(req.body.questionName, req.body.questionId)
-      const question = await database.dbInterface.getQuestions(req.body.questionId)
+      const question = await database.dbInterface.getQuestion(req.body.questionId)
       res.redirect('/question/getAll/' + question[0].setId)
     } catch (exception) {
       next({message: exception})
