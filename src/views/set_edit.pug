@@ -1,24 +1,23 @@
 extends layout
 
 block style
-    include css/table.css
+    include css/set.css
 
 block content
     form(method='POST' action='/set/update')
         #content
-            p.title Set
-            table.table.table-striped
-                tr
-                    th Set Id
-                    th Set Name
-                    th Actions
-                tr
-                    td
-                        input.form-control(type='text' id='setId' value=set.setId name='setId' readonly required)
-                    td
-                        input.form-control(type='text' id='setName' placeholder=set.setName name='setName' required)
-                    td
-                        div.actionItems
-                            button(type='submit' class='btn btn-success')
-                                i.fas.fa-save
+            p.title Set Namen bearbeiten
+            .tablew
+                table.table.table-striped
+                    tr
+                        th Set Name
+                        th Aktion
+                    tr
+                        td
+                            input.form-control(type='text' id='setName' placeholder=set.setName name='setName' required)
+                            input(type='hidden' id='setId' value=set.setId name='setId')
+                        td
+                            div.actionItems
+                                button(type='submit' class='btn btn-success')
+                                    i.fas.fa-save
 

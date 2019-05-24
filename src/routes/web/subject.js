@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get('/:id([0-9]+)', async (req, res) => {
   const subject = await database.dbInterface.getSubject(req.params.id)
-  res.render('edit', {
+  res.render('subject_edit', {
     subject: subject[0].dataValues
   })
 })
@@ -17,7 +17,6 @@ router.post('/', [
     .isLength({min: 1}),
 ], async (req, res, next) => {
   const errors = validationResult(req)
-
   if (errors.isEmpty()) {
     try {
       await database.dbInterface.addSubject(req.body.subjectName, req.body.userId)
@@ -41,7 +40,6 @@ router.post('/update', [
     .isLength({min: 1}),
 ], async (req, res, next) => {
   const errors = validationResult(req)
-
   if (errors.isEmpty()) {
     try {
       await database.dbInterface.updateSubject(req.body.subjectName, req.body.subjectId)

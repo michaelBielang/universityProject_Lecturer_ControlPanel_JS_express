@@ -1,24 +1,23 @@
 extends layout
 
 block style
-    include css/home.css
+    include css/question.css
 
 block content
     form(method='POST' action='/question/update')
         #content
-            p.title Question
-            table.table.table-striped
-                tr
-                    th Question Id
-                    th Question Name
-                    th Actions
-                tr
-                    td
-                        input.form-control(type='text' id='topicId' value=question.topicId name='topicId' readonly required)
-                    td
-                        input.form-control(type='text' id='questionName' placeholder=question.question name='questionName' required)
-                    td
-                        div.actionItems
-                            button(type='submit' class='btn btn-success')
-                                i.fas.fa-save
+            p.title Frage bearbeiten
+            .tablew
+                table.table.table-striped
+                    tr
+                        th Frage
+                        th Aktion
+                    tr
+                        td
+                            input.form-control(type='text' id='questionName' placeholder=question.question name='questionName' required)
+                            input(type='hidden' id='questionId' value=question.questionId name='questionId')
+                        td
+                            div.actionItems
+                                button(type='submit' class='btn btn-success')
+                                    i.fas.fa-save
 
