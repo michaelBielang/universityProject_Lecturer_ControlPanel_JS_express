@@ -4,6 +4,7 @@ const path = require('path')
 const logger = require('morgan')
 const session = require('express-session')
 var parseurl = require('parseurl')
+const corsMiddleware = require('./src/middleware/cors');
 
 const app = express()
 // view engine setup
@@ -39,6 +40,8 @@ app.use(function (req, res, next) {
 
   next()
 })
+
+app.use(corsMiddleware);
 // END
 
 require('./src/routes/web')(app)
