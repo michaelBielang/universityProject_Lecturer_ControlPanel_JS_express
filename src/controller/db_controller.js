@@ -534,13 +534,15 @@ function addAnswer (content, isCorrect, questionId) {
 /**
  *
  * @param newAnswer
+ * @param isCorrect
  * @param answerId
  * @returns {Promise<any>}
  */
-function updateAnswer (newAnswer, answerId) {
+function updateAnswer (newAnswer, isCorrect, answerId) {
   return new Promise((resolve, reject) => {
     answerModel.update({
-      answer: newAnswer
+      answer: newAnswer,
+      isCorrect: isCorrect
     }, {where: {answerId: answerId}})
       .then(() => resolve())
       .catch(() => reject(false))
