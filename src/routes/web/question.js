@@ -29,7 +29,7 @@ router.get('/:id([0-9]+)', async (req, res) => {
  * Adds a new question
  */
 router.post('/', [
-  body('questionName')
+  body('question')
     .isLength({min: 1}),
   body('setId')
     .isLength({min: 1}),
@@ -37,7 +37,7 @@ router.post('/', [
   const errors = validationResult(req)
   if (errors.isEmpty()) {
     try {
-      await database.dbInterface.addQuestion(req.body.questionName, req.body.setId)
+      await database.dbInterface.addQuestion(req.body.question, req.body.setId)
       res.redirect('back')
     } catch (exception) {
       next({message: exception})
@@ -55,7 +55,7 @@ router.post('/', [
  * Updates a new topic
  */
 router.post('/update', [
-  body('questionName')
+  body('question')
     .isLength({min: 1}),
   body('questionId')
     .isLength({min: 1}),
@@ -63,7 +63,7 @@ router.post('/update', [
   const errors = validationResult(req)
   if (errors.isEmpty()) {
     try {
-      await database.dbInterface.updateQuestion(req.body.questionName, req.body.questionId)
+      await database.dbInterface.updateQuestion(req.body.question, req.body.questionId)
       const question = await database.dbInterface.getQuestion(req.body.questionId)
       res.redirect('/question/getAll/' + question[0].setId)
     } catch (exception) {

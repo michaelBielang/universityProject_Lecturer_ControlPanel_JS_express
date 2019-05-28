@@ -20,11 +20,11 @@ block content
                                         i.fas.fa-edit
                                     a(href='/question/delete/' + question.questionId)
                                         i.fas.fa-trash-alt
-                                    a(href='/set/getAll/' + question.questionId)
+                                    a(href='/answer/getAll/' + question.questionId)
                                         i.fas.fa-arrow-right
                     tr
                         td
-                            input.form-control(type='text' id='questionName' name='questionName' required)
+                            input.form-control(type='text' id='question' name='question' required)
                             input.form-control(type='hidden' id='setId' name='setId' value=setId required)
                         td
                             div.actionItems
