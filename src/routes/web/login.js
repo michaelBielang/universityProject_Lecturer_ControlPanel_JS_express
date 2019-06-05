@@ -148,7 +148,7 @@ router.get('/', async (req, res) => {
   // init db model. Will be ignored if already applied
   await database.dbInterface.initDb()
   await Promise.resolve(resolve => setTimeout(resolve, 250))
-  res.render('login', {Msg: 'Welcome'})
+  res.render('login', {Msg: 'Willkommen'})
 })
 
 router.post('/', async (req, res, next) => {
@@ -167,7 +167,7 @@ router.post('/', async (req, res, next) => {
       session.user = rzId
       res.redirect('/home')
     }).catch(() => {
-        res.render('login', {Msg: 'Welcome'})
+        res.render('login', {Msg: 'Willkommen'})
       }
     )
 
