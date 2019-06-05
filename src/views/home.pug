@@ -4,13 +4,15 @@ block style
     include css/home.css
 
 block content
-    form(method='POST' action='/subject/')
-        #content
+    #content
+        form(method='POST' action='/subject/')
             div.tablew
                 table.table.table-striped
                     tr
                         th Fach
-                        th Aktion
+                        th Bearbeiten
+                        th Löschen
+                        th Zum Thema
                     for subject in subjects
                         tr
                             td=subject.subjectName
@@ -18,11 +20,16 @@ block content
                                 div.actionItems
                                     a(href='/subject/' + subject.subjectId)
                                         i.fas.fa-edit
+                            td
+                                div.actionItems
                                     a(href='/subject/delete/' + subject.subjectId)
                                         i.fas.fa-trash-alt
+                            td
+                                div.actionItems
                                     a(href='/topic/getAll/' + subject.subjectId)
                                         i.fas.fa-arrow-right
                     tr
+                        td Neues Fach:
                         td
                             input.form-control(type='text' id='subjectName' name='subjectName' required)
                             input.form-control(type='hidden' id='userId' name='userId' value=userId required)
@@ -30,5 +37,5 @@ block content
                             div.actionItems
                                 button(type='submit' class='btn btn-success')
                                     i.fas.fa-plus  Hinzufügen
-
+                        td
 

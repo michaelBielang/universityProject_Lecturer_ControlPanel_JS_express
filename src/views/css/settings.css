@@ -1,5 +1,3 @@
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300);
-
 .container {
     width: 400px;
     position: absolute;
@@ -15,11 +13,6 @@
     color: #db0000
 }
 
-ul {
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 20px;
-    list-style-type: none;
-}
 
 .bg-bubbles {
     position: absolute;
