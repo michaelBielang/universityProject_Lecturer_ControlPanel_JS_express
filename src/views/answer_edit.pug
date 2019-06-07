@@ -1,0 +1,27 @@
+extends layout
+
+block style
+    include css/answer.css
+
+block content
+    form(method='POST' action='/answer/update')
+        #content
+            p.title Antwort bearbeiten
+            .tablew
+                table.table.table-striped
+                    tr
+                        th Antwort
+                        th Aktion
+                    tr
+                        td
+                            div.inputItems
+                                input(type='text' id='answer' placeholder=answer.answer name='answer' required)
+                                input(type='hidden' name='isCorrect' value=(answer.isCorrect === true? 1 : 0))
+                                input(type='checkbox' id='isCorrect' onclick="this.previousSibling.value=1-this.previousSibling.value" checked=answer.isCorrect)
+                                label(for='isCorrect')='is correct?'
+                                input(type='hidden' id='answerId' value=answer.answerId name='answerId')
+                        td
+                            div.actionItems
+                                button(type='submit' class='btn btn-success')
+                                    i.fas.fa-save
+

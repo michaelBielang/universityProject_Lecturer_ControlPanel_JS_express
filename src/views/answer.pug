@@ -1,0 +1,34 @@
+extends layout
+
+block style
+    include css/answer.css
+
+block content
+    form(method='POST' action='/answer/')
+        #content
+            .tablew
+                table.table.table-striped
+                    tr
+                        th Answer Name
+                        th Actions
+                    for answer in answers
+                        tr
+                            td=answer.answer
+                            td
+                                div.actionItems
+                                    a(href='/answer/' + answer.answerId)
+                                        i.fas.fa-edit
+                                    a(href='/answer/delete/' + answer.answerId)
+                                        i.fas.fa-trash-alt
+                    tr
+                        td
+                            div.inputItems
+                                input(type='text' id='answer' name='answer' placeholder='New Answer' required)
+                                input(type='hidden' name='isCorrect' value=0)
+                                input(type='checkbox' id='isCorrect' onclick="this.previousSibling.value=1-this.previousSibling.value")
+                                label(for='isCorrect')='is correct?'
+                                input(type='hidden' id='questionId' name='questionId' value=questionId required)
+                        td
+                            div.actionItems
+                                button(type='submit' class='btn btn-success')
+                                    i.fas.fa-plus  Hinzufügen

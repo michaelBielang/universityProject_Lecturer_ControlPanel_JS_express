@@ -1,0 +1,23 @@
+extends layout
+
+block style
+    include css/settings.css
+
+
+block content
+    .container
+        .card-deck.mb-3.text-center
+            .card.mb-4.shadow-sm
+                .card-header
+                    h3.wiped=response
+                    h4.my-0.font-weight-normal=msg
+                .card-body
+                    h1.card-title.pricing-card-title
+                        | Achtung!
+                    ul.list-unstyled.mt-3.mb-4
+                        li Mit dem Klick auf Wipe
+                        li werden alle Ihre bisheringen
+                        li Daten unwiderruflich gelöscht!
+                    button.btn.btn-lg.btn-block.btn-danger(onclick="location.href='/cc/wipe'" type='button' disabled=disabled) WIPE DATA
+
+

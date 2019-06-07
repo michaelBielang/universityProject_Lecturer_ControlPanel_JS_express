@@ -1,0 +1,23 @@
+extends layout
+
+block style
+    include css/question.css
+
+block content
+    form(method='POST' action='/question/update')
+        #content
+            p.title Frage bearbeiten
+            .tablew
+                table.table.table-striped
+                    tr
+                        th Frage
+                        th Aktion
+                    tr
+                        td
+                            input.form-control(type='text' id='question' placeholder=question.question name='question' required)
+                            input(type='hidden' id='questionId' value=question.questionId name='questionId')
+                        td
+                            div.actionItems
+                                button(type='submit' class='btn btn-success')
+                                    i.fas.fa-save
+

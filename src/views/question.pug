@@ -1,0 +1,32 @@
+extends layout
+
+block style
+    include css/question.css
+
+block content
+    form(method='POST' action='/question/')
+        #content
+            .tablew
+                table.table.table-striped
+                    tr
+                        th Question Name
+                        th Actions
+                    for question in questions
+                        tr
+                            td=question.question
+                            td
+                                div.actionItems
+                                    a(href='/question/' + question.questionId)
+                                        i.fas.fa-edit
+                                    a(href='/question/delete/' + question.questionId)
+                                        i.fas.fa-trash-alt
+                                    a(href='/answer/getAll/' + question.questionId)
+                                        i.fas.fa-arrow-right
+                    tr
+                        td
+                            input.form-control(type='text' id='question' name='question' required)
+                            input.form-control(type='hidden' id='setId' name='setId' value=setId required)
+                        td
+                            div.actionItems
+                                button(type='submit' class='btn btn-success')
+                                    i.fas.fa-plus  Hinzufügen

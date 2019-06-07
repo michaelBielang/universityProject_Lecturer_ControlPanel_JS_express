@@ -1,0 +1,23 @@
+extends layout
+
+block style
+    include css/topic_edit.css
+
+block content
+    form(method='POST' action='/topic/update')
+        #content
+            p.title Thema Namen bearbeiten
+            div.tablew
+                table.table.table-striped
+                    tr
+                        th Thema Name
+                        th Aktion
+                    tr
+                        td
+                            input.form-control(type='text' id='topicName' placeholder=topic.topicName name='topicName' required)
+                            input(type='hidden' id='topicId' value=topic.topicId name='topicId')
+                        td
+                            div.actionItems
+                                button(type='submit' class='btn btn-success')
+                                    i.fas.fa-save
+

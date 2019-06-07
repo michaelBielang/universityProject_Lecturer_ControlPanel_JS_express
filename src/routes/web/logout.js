@@ -7,12 +7,18 @@
  * java version "10.0.1"
  */
 const express = require('express')
-const database = require('../controller/db_controller')
 const router = express.Router()
-const user = require('./login')
+const session = require('express-session')
 
 router.get('/', async (req, res) => {
-  res.render('home', {Msg: 'Welcome'})
+  if (session.user) {
+    req.session.destroy(function () {
+      session.user = undefined
+      res.redirect('/')
+    })
+  } else {
+    res.redirect('/')
+  }
 })
 
 module.exports = router

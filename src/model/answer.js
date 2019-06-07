@@ -11,6 +11,11 @@ const db = require('../db/database').sequeliceInstance
 
 const answer = db.define('answer', {
   // attributes
+  answerId: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   answer: {
     type: Sequelize.TEXT,
     allowNull: false
@@ -18,6 +23,14 @@ const answer = db.define('answer', {
   isCorrect: {
     type: Sequelize.BOOLEAN,
     allowNull: false
+  },
+  questionId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: 'questions',
+      key: 'questionId',
+    },
+    onDelete: 'CASCADE'
   }
 })
 

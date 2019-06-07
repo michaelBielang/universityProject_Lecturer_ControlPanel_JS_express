@@ -1,0 +1,32 @@
+extends layout
+
+block style
+    include css/topic.css
+
+block content
+    #content
+        form(method='POST' action='/topic/')
+            div.tablew
+                table.table.table-striped
+                    tr
+                        th Thema
+                        th Aktion
+                    for topic in topics
+                        tr
+                            td=topic.topicName
+                            td
+                                div.actionItems
+                                    a(href='/topic/' + topic.topicId)
+                                        i.fas.fa-edit
+                                    a(href='/topic/delete/' + topic.topicId)
+                                        i.fas.fa-trash-alt
+                                    a(href='/set/getAll/' + topic.topicId)
+                                        i.fas.fa-arrow-right
+                    tr
+                        td
+                            input.form-control(type='text' id='topicName' name='topicName' required)
+                            input.form-control(type='hidden' id='subjectId' name='subjectId' value=subjectId required)
+                        td
+                            div.actionItems
+                                button(type='submit' class='btn btn-success')
+                                    i.fas.fa-plus  Hinzufügen

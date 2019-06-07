@@ -6,32 +6,30 @@ html
         script (src = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js")
         script (src = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js")
         link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
-
+        link(rel='stylesheet', href='https://use.fontawesome.com/releases/v5.8.2/css/all.css', integrity='sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay', crossorigin='anonymous')
 
     script
         block script
 
+    style
+        block style
+
     body
         style
-            include css/background.css
+            include css/layout.css
         .wrapper
             nav.navbar.navbar-expand-md.navbar-light
                 .navbar-collapse.collapse.w-100.order-1.order-md-0.dual-collapse2
                     ul.navbar-nav.mr-auto
                         li.nav-item.active
                             a.nav-link(href='/') Home
-                        li.nav-item.active
-                            a.nav-link(href='/subjects') Fächer
                 .mx-auto.order-0
-                    a.navbar-brand.mx-auto.logo(href='#') Campus Arcade CP
-                    button.navbar-toggler(type='button', data-toggle='collapse', data-target='.dual-collapse2')
-                        span.navbar-toggler-icon
+                    a.navbar-brand.mx-auto(href='#')
+                        img(src='/images/logo.png', alt='')
                 .navbar-collapse.collapse.w-100.order-3.dual-collapse2
                     ul.navbar-nav.ml-auto
                         li.nav-item
-                            a.nav-link(href='/cc') CC
+                            a.nav-link.active(href='/cc') Settings
                         li.nav-item
-                            a.nav-link(href='/logout') Logout
+                            a.nav-link.active(href='/logout') Logout
             block content
-
-

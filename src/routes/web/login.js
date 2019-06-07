@@ -7,10 +7,10 @@
  * java version "10.0.1"
  */
 const express = require('express')
-const database = require('../controller/db_controller')
+const database = require('../../controller/db_controller')
 const ldapjs = require('ldapjs')
 const router = express.Router()
-let userId = 'asd'
+const session = require('express-session')
 
 // all following async functions are here for testing purposes only. Should be removed as soon as this app is finished
 async function generateUserId (db) {
@@ -19,22 +19,32 @@ async function generateUserId (db) {
 
 async function generateSubjectId (db) {
   const userId = await generateUserId(db)
-  return await db.dbInterface.addSubject('test', 'a')
+  console.log('userId: ' + userId)
+  return await db.dbInterface.addSubject('subject', userId)
 }
 
 async function generateTopicId (db) {
   const subjectId = await generateSubjectId(db)
-  return await db.dbInterface.addTopic('test', subjectId)
+  console.log('subjectId: ' + subjectId)
+  return await db.dbInterface.addTopic('topic', subjectId)
 }
 
 async function generateSetId (db) {
   const topicId = await generateTopicId(db)
-  return await db.dbInterface.addSet('test', topicId)
+  console.log('topicId: ' + topicId)
+  return await db.dbInterface.addSet('set', topicId)
 }
 
 async function generateQuestionId (db) {
-  const topicId = await generateSetId(db)
-  return await db.dbInterface.addQuestion('test', topicId)
+  const setId = await generateSetId(db)
+  console.log('setId: ' + setId)
+  return await db.dbInterface.addQuestion('question', setId)
+}
+
+async function generateAnswerId (db) {
+  const answerId = await generateQuestionId(db)
+  console.log('answerId: ' + answerId)
+  return await db.dbInterface.addAnswer('answer', answerId)
 }
 
 /**
@@ -135,34 +145,29 @@ function auth (client, user, pass) {
 }
 
 router.get('/', async (req, res) => {
-
   // init db model. Will be ignored if already applied
   await database.dbInterface.initDb()
-  res.render('login', {Msg: 'Welcome'})
+  await Promise.resolve(resolve => setTimeout(resolve, 250))
+  res.render('login', {Msg: 'Willkommen'})
 })
 
 router.post('/', async (req, res, next) => {
 
   const password = req.body.password
   const rzId = req.body.rzLogin
-  userId = rzId
   // TODO for testing
   await database.dbInterface.getUser(rzId)
     .then(() => {
       //case user is present
-      console.log('1')
       return Promise.resolve()
     }, async () => {
       //case user is not present
-      console.log('2')
-      return await generateQuestionId(database)
+      return await generateAnswerId(database)
     }).then(() => {
-      console.log('3')
+      session.user = rzId
       res.redirect('/home')
     }).catch(() => {
-        //TODO handle error case with view
-        console.log('4')
-        res.render('login', {Msg: 'Welcome'})
+        res.render('login', {Msg: 'Willkommen'})
       }
     )
 
@@ -174,12 +179,12 @@ router.post('/', async (req, res, next) => {
       .then(() => {
         //case user is present
 
-        this.userId = rzId
+        session.user = rzId
         return Promise.resolve()
       }, () => {
         //case user is not present
 
-        return database.dbInterface.addUser('', '', '', '', '', rzId)
+        return database.dbInterface.addUser(rzId, '', '', '', '', '')
       })
   }).then(() => {
     res.redirect('/home')
@@ -194,6 +199,3 @@ router.post('/', async (req, res, next) => {
 })
 
 module.exports = router
-module.exports.myTest = function () {
-  return userId
-}

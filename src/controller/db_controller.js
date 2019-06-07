@@ -139,7 +139,7 @@ function getUser (rzId) {
 
 /**
  *
- * @param rzId
+ * @param deleted rows
  */
 function deleteUser (rzId) {
   return new Promise((resolve, reject) => {
@@ -147,8 +147,8 @@ function deleteUser (rzId) {
       where: {
         userId: rzId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })
@@ -166,8 +166,9 @@ function addTopic (title, subjectId) {
     topicName: title,
     subjectId: subjectId
   }).then(result => {
-    return result.id
-  }, () => {
+    return result.topicId
+  }, (err) => {
+    console.log('error: ' + err)
     return false
   })
 }
@@ -182,7 +183,7 @@ function updateTopic (newTopicName, topicId) {
   return new Promise((resolve, reject) => {
     topicModel.update({
       topicName: newTopicName
-    }, {where: {id: topicId}})
+    }, {where: {topicId: topicId}})
       .then(() => resolve(true))
       .catch(() => reject(false))
   })
@@ -197,10 +198,10 @@ function deleteTopic (topicId) {
   return new Promise((resolve, reject) => {
     topicModel.destroy({
       where: {
-        id: topicId
+        topicId: topicId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })
@@ -216,7 +217,7 @@ function getTopic (id) {
   return new Promise((resolve, reject) => {
     topicModel.findAll({
       where: {
-        id: id
+        topicId: id
       }
     }).then(topicObj => {
       resolve(topicObj)
@@ -256,7 +257,7 @@ function addSet (setName, topicId) {
     setName,
     topicId
   }).then(result => {
-    return result.id
+    return result.setId
   }, () => {
     return false
   })
@@ -272,20 +273,21 @@ function updateSet (setName, setId) {
   return new Promise((resolve, reject) => {
     setModel.update({
       setName: setName
-    }, {where: {id: setId}})
+    }, {where: {setId: setId}})
       .then(() => resolve(true))
       .catch(() => reject(false))
   })
 }
 
 /**
- * Deletes a set
+ *
  * @param setId
+ * @returns deleted rows
  */
 function deleteSet (setId) {
-  setModel.destroy({
+  return setModel.destroy({
     where: {
-      id: setId
+      setId: setId
     }
   })
 }
@@ -299,7 +301,7 @@ function getSet (setId) {
   return new Promise((resolve, reject) => {
     setModel.findAll({
       where: {
-        id: setId
+        setId: setId
       }
     }).then(topicObj => {
       resolve(topicObj)
@@ -339,7 +341,7 @@ function addSubject (subjectName, rzId) {
     subjectName: subjectName,
     userId: rzId
   }).then(result => {
-    return result.id
+    return result.subjectId
   }, () => {
     return false
   })
@@ -355,14 +357,14 @@ function updateSubject (subjectName, subjectId) {
   return new Promise((resolve, reject) => {
     subjectModel.update({
       subjectName: subjectName
-    }, {where: {id: subjectId}})
+    }, {where: {subjectId: subjectId}})
       .then(() => resolve(true))
       .catch(() => reject(false))
   })
 }
 
 /**
- *
+ * Delete subjects
  * @param subjectId
  * @return {Promise<any>}
  */
@@ -370,10 +372,10 @@ function deleteSubject (subjectId) {
   return new Promise((resolve, reject) => {
     subjectModel.destroy({
       where: {
-        id: subjectId
+        subjectId: subjectId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })
@@ -389,10 +391,10 @@ function getSubject (subjectId) {
   return new Promise((resolve, reject) => {
     subjectModel.findAll({
       where: {
-        id: subjectId
+        subjectId: subjectId
       }
-    }).then(topicObj => {
-      resolve(topicObj)
+    }).then(subjectObject => {
+      resolve(subjectObject)
     }, () => {
       reject(false)
     })
@@ -428,7 +430,7 @@ function addQuestion (question, setId) {
     question: question,
     setId: setId
   }).then(result => {
-    return result.id
+    return result.questionId
   }, () => {
     return false
   })
@@ -446,7 +448,7 @@ function updateQuestion (newQuestion, questionId) {
       question: newQuestion
     }, {
       where: {
-        id: questionId
+        questionId: questionId
       }
     })
       .then(() => resolve())
@@ -455,7 +457,7 @@ function updateQuestion (newQuestion, questionId) {
 }
 
 /**
- *
+ * Delete Questions
  * @param questionId
  * @return {Promise<any>}
  */
@@ -463,10 +465,10 @@ function deleteQuestion (questionId) {
   return new Promise((resolve, reject) => {
     questionModel.destroy({
       where: {
-        id: questionId
+        questionId: questionId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })
@@ -482,7 +484,7 @@ function getQuestion (questionId) {
   return new Promise((resolve, reject) => {
     questionModel.findAll({
       where: {
-        id: questionId
+        questionId: questionId
       }
     }).then(topicObj => {
       resolve(topicObj)
@@ -523,7 +525,7 @@ function addAnswer (content, isCorrect, questionId) {
     isCorrect: isCorrect,
     questionId: questionId
   }).then(result => {
-    return result.id
+    return result.answerId
   }, () => {
     return false
   })
@@ -532,21 +534,23 @@ function addAnswer (content, isCorrect, questionId) {
 /**
  *
  * @param newAnswer
+ * @param isCorrect
  * @param answerId
  * @returns {Promise<any>}
  */
-function updateAnswer (newAnswer, answerId) {
+function updateAnswer (newAnswer, isCorrect, answerId) {
   return new Promise((resolve, reject) => {
     answerModel.update({
-      answer: newAnswer
-    }, {where: {id: answerId}})
+      answer: newAnswer,
+      isCorrect: isCorrect
+    }, {where: {answerId: answerId}})
       .then(() => resolve())
       .catch(() => reject(false))
   })
 }
 
 /**
- *
+ * Delete answers
  * @param answerId
  * @returns {Promise<any>}
  */
@@ -554,10 +558,10 @@ function deleteAnswer (answerId) {
   return new Promise((resolve, reject) => {
     answerModel.destroy({
       where: {
-        id: answerId
+        answerId: answerId
       }
-    }).then(answerObj => {
-      resolve(answerObj)
+    }).then(deletedRows => {
+      resolve(deletedRows)
     }, () => {
       reject(false)
     })
@@ -573,7 +577,7 @@ function getAnswer (answerId) {
   return new Promise((resolve, reject) => {
     answerModel.findAll({
       where: {
-        id: answerId
+        answerId: answerId
       }
     }).then(answerObj => {
       resolve(answerObj)
@@ -606,27 +610,6 @@ function getAnswers (questionId) {
  * @returns {Promise<void>}
  */
 async function initDb () {
-
-  // user has subjects
-  //userModel.hasMany(subjectModel)
-  //subjectModel.belongsTo(userModel)
-
-  // subject has topics
-  subjectModel.hasMany(topicModel)
-  topicModel.belongsTo(subjectModel)
-
-  // topic has sets
-  topicModel.hasMany(setModel)
-  setModel.belongsTo(topicModel)
-
-  // set has questions
-  setModel.hasMany(questionModel)
-  questionModel.belongsTo(setModel)
-
-  // question and answer
-  questionModel.hasMany(answerModel)
-  answerModel.belongsTo(questionModel)
-
   await database.sync()
   return Promise.resolve()
 }

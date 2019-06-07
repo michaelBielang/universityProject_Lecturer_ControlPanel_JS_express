@@ -11,6 +11,11 @@ const db = require('../db/database').sequeliceInstance
 
 const subject = db.define('subject', {
   // attributes
+  subjectId: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   subjectName: {
     type: Sequelize.TEXT,
     allowNull: false
