@@ -6,6 +6,7 @@
  * Project:
  * java version "10.0.1"
  */
+
 const express = require('express')
 const database = require('../../controller/db_controller')
 const ldapjs = require('ldapjs')
@@ -156,23 +157,24 @@ router.post('/', async (req, res, next) => {
   const password = req.body.password
   const rzId = req.body.rzLogin
   // TODO for testing
-  await database.dbInterface.getUser(rzId)
-    .then(() => {
-      //case user is present
-      return Promise.resolve()
-    }, async () => {
-      //case user is not present
-      return await generateAnswerId(database)
-    }).then(() => {
-      session.user = rzId
-      res.redirect('/home')
-    }).catch(() => {
-        res.render('login', {Msg: 'Willkommen'})
-      }
-    )
+  /*
+   await database.dbInterface.getUser(rzId)
+      .then(() => {
+        //case user is present
+        return Promise.resolve()
+      }, async () => {
+        //case user is not present
+        return await generateAnswerId(database)
+      }).then(() => {
+        session.user = rzId
+        res.redirect('/home')
+      }).catch(() => {
+          res.render('login', {Msg: 'Willkommen'})
+        }
+      )
+      */
 
-  // TODO activate for production
-  /*await getLdapClient().then(resolve => {
+  await getLdapClient().then(resolve => {
     return auth(resolve, rzId, password)
   }).then(() => {
     return database.dbInterface.getUser(rzId)
@@ -195,7 +197,7 @@ router.post('/', async (req, res, next) => {
         data: req.body,
       })
     }
-  )*/
+  )
 })
 
 module.exports = router
