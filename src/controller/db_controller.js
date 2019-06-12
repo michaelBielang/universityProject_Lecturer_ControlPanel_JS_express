@@ -17,6 +17,7 @@ const database = require('../db/database').sequeliceInstance
 
 exports.dbInterface = {
   addUser: addUser,
+  getUsers: getUsers,
   checkHealth: checkHealth,
   closeConnection: closeConnection,
   getUser: getUser,
@@ -111,6 +112,27 @@ function addUser (rzId, firstName, lastName, email, title, password_encrypted) {
     return userObj.userId
   }, () => {
     return false
+  })
+}
+
+/**
+ * returns all available users
+ * @param rzId
+ * @returns {Promise<user> | Promise<boolean>}
+ */
+function getUsers () {
+  return new Promise((resolve, reject) => {
+    userModel.findAll().then(result => {
+      if (result.length > 0) {
+        const users = []
+        result.forEach(entry => users.push(entry.dataValues.userId))
+        resolve(users)
+      } else {
+        reject()
+      }
+    }, () => {
+      reject(false)
+    })
   })
 }
 
