@@ -2,7 +2,7 @@ const express = require('express')
 const database = require('../../controller/db_controller')
 const router = express.Router()
 
-router.get('/getAll/:userId([a-zA-Z]+)', async (req, res, next) => {
+router.get('/getAll/:userId([a-zA-Z0-9]+)', async (req, res, next) => {
   console.log('Test')
   try {
     const data = await database.dbInterface.getSubjects(req.params.userId)
