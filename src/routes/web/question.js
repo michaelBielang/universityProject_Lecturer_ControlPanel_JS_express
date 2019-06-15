@@ -9,9 +9,11 @@ const router = express.Router()
 router.get('/getAll/:setId([0-9]+)', async (req, res, next) => {
   try {
     const data = await database.dbInterface.getQuestions(req.params.setId)
+    const set = await database.dbInterface.getSet(req.params.setId)
     res.render('question', {
       questions: data,
-      setId: req.params.setId
+      setId: req.params.setId,
+      set: set[0].dataValues.setName
     })
   } catch (e) {
     next({message: 'Something went wrong'})

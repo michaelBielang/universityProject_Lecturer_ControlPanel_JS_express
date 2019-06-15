@@ -6,9 +6,11 @@ const router = express.Router()
 router.get('/getAll/:topicId([0-9]+)', async (req, res, next) => {
   try {
     const data = await database.dbInterface.getSets(req.params.topicId)
+    const topic = await database.dbInterface.getTopic(req.params.topicId)
     res.render('set', {
       sets: data,
-      topicId: req.params.topicId
+      topicId: req.params.topicId,
+      topic: topic[0].dataValues.topicName
     })
   } catch (e) {
     next({message: 'Something went wrong'})
@@ -73,7 +75,6 @@ router.post('/update', [
 
 router.get('/delete/:id([0-9]+)', async (req, res, next) => {
   try {
-    console.log(req.params.id)
     await database.dbInterface.deleteSet(req.params.id)
     res.redirect('back')
   } catch (exception) {
