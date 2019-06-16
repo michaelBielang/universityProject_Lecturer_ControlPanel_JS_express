@@ -1,5 +1,4 @@
 const express = require('express')
-const {body, validationResult} = require('express-validator/check/index')
 const database = require('../../controller/db_controller')
 const router = express.Router()
 

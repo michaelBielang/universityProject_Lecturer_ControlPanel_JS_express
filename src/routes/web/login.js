@@ -6,6 +6,7 @@
  * Project:
  * java version "10.0.1"
  */
+
 const express = require('express')
 const database = require('../../controller/db_controller')
 const ldapjs = require('ldapjs')
@@ -171,8 +172,8 @@ router.post('/', async (req, res, next) => {
       }
     )
 
-  // TODO activate for production
-  /*await getLdapClient().then(resolve => {
+  //TODO for production
+ /* await getLdapClient().then(resolve => {
     return auth(resolve, rzId, password)
   }).then(() => {
     return database.dbInterface.getUser(rzId)
