@@ -9,9 +9,11 @@ const router = express.Router()
 router.get('/getAll/:subjectId([0-9]+)', async (req, res, next) => {
   try {
     const data = await database.dbInterface.getTopics(req.params.subjectId)
+    const subject = await database.dbInterface.getSubject(req.params.subjectId)
     res.render('topic', {
       topics: data,
-      subjectId: req.params.subjectId
+      subjectId: req.params.subjectId,
+      subject: subject[0].dataValues.subjectName
     })
   } catch (e) {
     next({message: 'Something went wrong'})

@@ -7,13 +7,21 @@ block content
     form(method='POST' action='/answer/')
         #content
             .tablew
+                h5=question
                 table.table
                     tr
                         th Answer Name
+                        th Correct Answer
                         th Actions
                     for answer in answers
                         tr
                             td=answer.answer
+                            td
+                                div.actionItems
+                                    span(style={ display: answer.isCorrect? 'inline' : 'none', color: 'green' })
+                                        i.fas.fa-check-circle
+                                    span(style={ display: answer.isCorrect? 'none' : 'inline', color: 'red' })
+                                        i.fas.fa-times-circle
                             td
                                 div.actionItems
                                     a(href='/answer/' + answer.answerId)
@@ -24,6 +32,8 @@ block content
                         td
                             div.inputItems
                                 input(type='text' id='answer' name='answer' placeholder='New Answer' required)
+                        td
+                            div.inputItems
                                 input(type='hidden' name='isCorrect' value=0)
                                 input(type='checkbox' id='isCorrect' onclick="this.previousSibling.value=1-this.previousSibling.value")
                                 label(for='isCorrect')='is correct?'
