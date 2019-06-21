@@ -157,12 +157,14 @@ router.post('/', async (req, res, next) => {
   const password = req.body.password
   const rzId = req.body.rzLogin
   // TODO for testing
-  await database.dbInterface.getUser(rzId)
+ /* await database.dbInterface.getUser(rzId)
     .then(() => {
       //case user is present
+      console.log('not present')
       return Promise.resolve()
     }, async () => {
       //case user is not present
+      console.log('present')
       return await generateAnswerId(database)
     }).then(() => {
       session.user = rzId
@@ -170,10 +172,10 @@ router.post('/', async (req, res, next) => {
     }).catch(() => {
         res.render('login', {Msg: 'Willkommen'})
       }
-    )
+    )*/
 
   //TODO for production
- /* await getLdapClient().then(resolve => {
+  await getLdapClient().then(resolve => {
     return auth(resolve, rzId, password)
   }).then(() => {
     return database.dbInterface.getUser(rzId)
@@ -196,7 +198,7 @@ router.post('/', async (req, res, next) => {
         data: req.body,
       })
     }
-  )*/
+  )
 })
 
 module.exports = router

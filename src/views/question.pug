@@ -7,11 +7,14 @@ block content
     form(method='POST' action='/question/')
         #content
             .tablew
-                h5=set
+                h5='Frage zu Set: ' + set
+                br
                 table.table
                     tr
                         th Frage
-                        th Actions
+                        th Bearbeiten
+                        th Löschen
+                        th Zur Antwort
                     for question in questions
                         tr
                             td=question.question
@@ -19,15 +22,21 @@ block content
                                 div.actionItems
                                     a(href='/question/' + question.questionId)
                                         i.fas.fa-edit
+                            td
+                                div.actionItems
                                     a(href='/question/delete/' + question.questionId)
                                         i.fas.fa-trash-alt
+                            td
+                                div.actionItems
                                     a(href='/answer/getAll/' + question.questionId)
                                         i.fas.fa-arrow-right
                     tr
+                        td  Neue Frage:
                         td
-                            input.form-control(type='text' id='question' name='question' required)
+                            input.form-control(type='text' id='question' name='question' placeholder='Frage eingeben' required)
                             input.form-control(type='hidden' id='setId' name='setId' value=setId required)
                         td
                             div.actionItems
                                 button(type='submit' class='btn btn-success')
                                     i.fas.fa-plus  Hinzufügen
+                        td
