@@ -7,10 +7,14 @@ block content
     #content
         form(method='POST' action='/topic/')
             div.tablew
+                h5='Fach: ' + subject
+                br
                 table.table
                     tr
                         th Thema
-                        th Aktion
+                        th Bearbeiten
+                        th Löschen
+                        th Zum Set
                     for topic in topics
                         tr
                             td=topic.topicName
@@ -18,15 +22,21 @@ block content
                                 div.actionItems
                                     a(href='/topic/' + topic.topicId)
                                         i.fas.fa-edit
+                            td
+                                div.actionItems
                                     a(href='/topic/delete/' + topic.topicId)
                                         i.fas.fa-trash-alt
+                            td
+                                div.actionItems
                                     a(href='/set/getAll/' + topic.topicId)
                                         i.fas.fa-arrow-right
                     tr
+                        td  Neues Thema:
                         td
-                            input.form-control(type='text' id='topicName' name='topicName' required)
+                            input.form-control(type='text' id='topicName' name='topicName' placeholder='Thema-Name' required)
                             input.form-control(type='hidden' id='subjectId' name='subjectId' value=subjectId required)
                         td
                             div.actionItems
                                 button(type='submit' class='btn btn-success')
                                     i.fas.fa-plus  Hinzufügen
+                        td

@@ -6,8 +6,9 @@ block style
 block content
     form(method='POST' action='/answer/update')
         #content
-            p.title Antwort bearbeiten
             .tablew
+                p.title Antwort bearbeiten
+                br
                 table.table
                     tr
                         th Antwort
@@ -16,7 +17,7 @@ block content
                         td
                             div.inputItems
                                 input(type='text' id='answer' placeholder=answer.answer name='answer' required)
-                                input(type='hidden' name='isCorrect' value=(answer.isCorrect === true? 1 : 0))
+                                input(type='hidden' name='isCorrect' value=(answer.isCorrect === true ? 1 : 0))
                                 input(type='checkbox' id='isCorrect' onclick="this.previousSibling.value=1-this.previousSibling.value" checked=answer.isCorrect)
                                 label(for='isCorrect')='is correct?'
                                 input(type='hidden' id='answerId' value=answer.answerId name='answerId')

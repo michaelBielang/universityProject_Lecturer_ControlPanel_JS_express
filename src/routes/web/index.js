@@ -16,6 +16,7 @@ const setController = require('./set')
 const ccController = require('./settings')
 const session = require('express-session')
 
+// sessionMiddleware tests if user is logged in
 function sessionMiddleware (req, res, next) {
   if (session.user) {
     next()
@@ -25,6 +26,7 @@ function sessionMiddleware (req, res, next) {
 }
 
 module.exports = (app) => {
+  // routes for Dozentenverwaltung (needs session) (GET, POST, UPDATE, REMOVE)
   app.use('/', loginController)
   app.use('/home', sessionMiddleware, homeController)
   app.use('/subject', sessionMiddleware, subjectPage)
@@ -34,6 +36,8 @@ module.exports = (app) => {
   app.use('/question', sessionMiddleware, questionController)
   app.use('/answer', sessionMiddleware, answerController)
   app.use('/cc', sessionMiddleware, ccController)
+
+  // routes for API (only GET)
   app.use('/api/users', userRouter)
   app.use('/api/question', questionRouter)
   app.use('/api/answer', answerRouter)

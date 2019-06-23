@@ -17,11 +17,11 @@ table {
 .tablew {
     width: 70%;
     position: absolute;
-    top: 30%;
+    top: 20%;
     bottom: 0;
     left: 0;
     right: 0;
-
+    overflow-y: auto;
     margin: auto;
 }
 

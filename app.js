@@ -6,6 +6,7 @@ const session = require('express-session')
 var parseurl = require('parseurl')
 var cors = require('cors')
 
+// cross origin allowing special routes to access the API (i.e. development of frontend)
 var corsOptions = {
     origin: ['http://localhost:8080', 'http://127.0.0.1:8080'],
     credentials: false,
@@ -13,10 +14,12 @@ var corsOptions = {
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
+// express web framework
 const app = express()
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'))
 app.set('view engine', 'pug')
+// logger running on dev
 app.use(logger('dev'))
 app.use(express.json())
 app.use(cors(corsOptions))
@@ -50,6 +53,7 @@ app.use(function (req, res, next) {
 })
 // END
 
+// routing core point
 require('./src/routes/web')(app)
 
 // catch 404 and forward to error handler

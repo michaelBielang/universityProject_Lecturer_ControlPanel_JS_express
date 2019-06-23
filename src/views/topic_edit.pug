@@ -6,12 +6,13 @@ block style
 block content
     form(method='POST' action='/topic/update')
         #content
-            p.title Thema Namen bearbeiten
             div.tablew
+                p.title Thema Namen bearbeiten
+                br
                 table.table
                     tr
-                        th Thema Name
-                        th Aktion
+                        th Thema-Name
+                        th Speichern
                     tr
                         td
                             input.form-control(type='text' id='topicName' placeholder=topic.topicName name='topicName' required)
