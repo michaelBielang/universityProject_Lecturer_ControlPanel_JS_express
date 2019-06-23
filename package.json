@@ -24,13 +24,11 @@
     "sequelize": "^5.8.6",
     "to": "^0.2.9",
     "update": "^0.7.4",
-    "sqlite3": "^4.0.8"
+    "sqlite3": "^4.0.9"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
     "mocha": "^6.0.2"
-    "mocha": "^6.0.2",
-    "sqlite3": "^4.0.9"
   }
 }
