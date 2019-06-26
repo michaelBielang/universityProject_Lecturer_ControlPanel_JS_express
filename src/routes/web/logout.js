@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
       res.redirect('/')
     })
   } else {
-    res.redirect('/')
+    res.redirect('/dvw')
   }
 })
 

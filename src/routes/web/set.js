@@ -60,7 +60,7 @@ router.post('/update', [
     try {
       await database.dbInterface.updateSet(req.body.setName, req.body.setId)
       const set = await database.dbInterface.getSet(req.body.setId)
-      res.redirect('/set/getAll/' + set[0].topicId)
+      res.redirect('/dvw/set/getAll/' + set[0].topicId)
     } catch (exception) {
       next({message: exception})
     }

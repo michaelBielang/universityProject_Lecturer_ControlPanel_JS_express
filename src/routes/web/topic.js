@@ -68,7 +68,7 @@ router.post('/update', [
     try {
       await database.dbInterface.updateTopic(req.body.topicName, req.body.topicId)
       const topic = await database.dbInterface.getTopic(req.body.topicId)
-      res.redirect('/topic/getAll/' + topic[0].subjectId)
+      res.redirect('/dvw/topic/getAll/' + topic[0].subjectId)
     } catch (exception) {
       next({message: exception})
     }
