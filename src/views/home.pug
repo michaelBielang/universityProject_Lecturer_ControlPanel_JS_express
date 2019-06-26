@@ -5,7 +5,7 @@ block style
 
 block content
     #content
-        form(method='POST' action='/subject/')
+        form(method='POST' action='dvw/subject/')
             div.tablew
                 table.table
                     tr
@@ -18,15 +18,15 @@ block content
                             td=subject.subjectName
                             td
                                 div.actionItems
-                                    a(href='/subject/' + subject.subjectId)
+                                    a(href='dvw/subject/' + subject.subjectId)
                                         i.fas.fa-edit
                             td
                                 div.actionItems
-                                    a(href='/subject/delete/' + subject.subjectId)
+                                    a(href='dvw/subject/delete/' + subject.subjectId)
                                         i.fas.fa-trash-alt
                             td
                                 div.actionItems
-                                    a(href='/topic/getAll/' + subject.subjectId)
+                                    a(href='dvw/topic/getAll/' + subject.subjectId)
                                         i.fas.fa-arrow-right
                     tr
                         td Neues Fach:
