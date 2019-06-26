@@ -40,7 +40,7 @@ router.post('/', [
   if (errors.isEmpty()) {
     try {
       await database.dbInterface.addTopic(req.body.topicName, req.body.subjectId)
-      res.redirect('back')
+      res.redirect('/dvw/topic/getAll/' + req.body.subjectId)
     } catch (exception) {
       next({message: exception})
     }
