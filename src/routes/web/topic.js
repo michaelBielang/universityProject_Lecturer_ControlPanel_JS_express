@@ -30,7 +30,7 @@ router.get('/:id([0-9]+)', async (req, res) => {
 /**
  * Adds a new topic
  */
-router.post('/', [
+router.post('/dvw', [
   body('topicName')
     .isLength({min: 1}),
   body('subjectId')
