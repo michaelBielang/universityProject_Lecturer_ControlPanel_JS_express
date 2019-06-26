@@ -10,6 +10,7 @@
 const express = require('express')
 const database = require('../../controller/db_controller')
 const router = express.Router()
+const session = require('express-session')
 
 router.get('/', async (req, res) => {
   res.render('settings', {
@@ -19,7 +20,7 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/wipe', async (req, res) => {
-  database.dbInterface.dropDb()
+  database.dbInterface.deleteUser(session.id)
     .then(() => {
       res.render('settings', {
         response: 'Data Wiped',
