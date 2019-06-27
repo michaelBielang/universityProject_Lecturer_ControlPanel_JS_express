@@ -20,7 +20,7 @@ router.post('/', [
   if (errors.isEmpty()) {
     try {
       await database.dbInterface.addSubject(req.body.subjectName, req.body.userId)
-      res.redirect('/home')
+      res.redirect('/dvw/home')
     } catch (exception) {
       next({message: exception})
     }
@@ -43,7 +43,7 @@ router.post('/update', [
   if (errors.isEmpty()) {
     try {
       await database.dbInterface.updateSubject(req.body.subjectName, req.body.subjectId)
-      res.redirect('/home')
+      res.redirect('/dvw/home')
     } catch (exception) {
       next({message: exception})
     }
@@ -59,7 +59,7 @@ router.post('/update', [
 router.get('/delete/:id([0-9]+)', async (req, res, next) => {
   try {
     await database.dbInterface.deleteSubject(req.params.id)
-    res.redirect('/home')
+    res.redirect('/dvw/home')
   } catch (exception) {
     next({message: exception})
   }

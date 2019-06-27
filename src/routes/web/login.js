@@ -190,7 +190,7 @@ router.post('/', async (req, res, next) => {
         return database.dbInterface.addUser(rzId, '', '', '', '', '')
       })
   }).then(() => {
-    res.redirect('/home')
+    res.redirect('/dvw/home')
   }).catch((err) => {
       res.render('login', {
         title: 'Login form',

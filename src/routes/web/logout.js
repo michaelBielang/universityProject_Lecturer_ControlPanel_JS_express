@@ -14,10 +14,10 @@ router.get('/', async (req, res) => {
   if (session.user) {
     req.session.destroy(function () {
       session.user = undefined
-      res.redirect('/')
+      res.redirect('/dvw')
     })
   } else {
-    res.redirect('/')
+    res.redirect('/dvw')
   }
 })
 

@@ -4,7 +4,7 @@ block style
     include css/answer.css
 
 block content
-    form(method='POST' action='/answer/')
+    form(method='POST' action='/dvw/answer/')
         #content
             .tablew
                 h5='Antwort zu Frage: ' + question
@@ -25,11 +25,11 @@ block content
                                         i.fas.fa-times-circle
                             td
                                 div.actionItems
-                                    a(href='/answer/' + answer.answerId)
+                                    a(href='/dvw/answer/' + answer.answerId)
                                         i.fas.fa-edit
                             td
                                 div.actionItems
-                                    a(href='/answer/delete/' + answer.answerId)
+                                    a(href='/dvw/answer/delete/' + answer.answerId)
                                         i.fas.fa-trash-alt
                     tr
                         td
